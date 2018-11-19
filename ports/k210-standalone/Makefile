@@ -6,6 +6,7 @@ SDK_PATH ?= kendryte-standalone-sdk
 MPY_MOD_PATH ?= mpy-mod
 FS_PORT_PATH ?= spiffs-port
 BOARD_DRIVERS_PATH ?= board-drivers
+OUT_BIN_FILENAME ？= micropython.bin
 
 # qstr definitions (must come before including py.mk)
 QSTR_DEFS = qstrdefsport.h
@@ -237,7 +238,7 @@ $(BUILD)/_frozen_mpy.c: frozentest.mpy $(BUILD)/genhdr/qstrdefs.generated.h
 	$(Q)$(TOP)/tools/mpy-tool.py -f -q $(BUILD)/genhdr/qstrdefs.preprocessed.h -mlongint-impl=none $< > $@
 
 all: 
-	make micropython.bin 
+	make $(OUT_BIN_FILENAME)
 
 micropython: $(OBJ)
 	$(ECHO) "LINK $@"
@@ -245,13 +246,13 @@ micropython: $(OBJ)
 	$(Q)$(SIZE) $@
 
 micropython.bin: micropython
-	$(OBJCOPY) --output-format=binary micropython micropython.bin
-	cp micropython.bin bin_file
+	$(OBJCOPY) --output-format=binary micropython $(OUT_BIN_FILENAME)
+	cp $(OUT_BIN_FILENAME) bin_file
 
 clean_all:  clean
-			rm -rf micropython micropython.bin
+			rm -rf micropython $(OUT_BIN_FILENAME)
 			make -C ../../mpy-cross clean
-			rm -rf ./bin_file/micropython.bin
+			rm -rf ./bin_file/$(OUT_BIN_FILENAME)
 			rm -rf ./bin_file/fs.bin
 			rm -rf ./bin_file/firmware.bin
 			rm -rf ./sipeedm1.kfpkg
