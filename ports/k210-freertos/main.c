@@ -36,6 +36,10 @@
 #include "lcd.h"
 #include "spiffs-port.h"
 #include <malloc.h>
+
+#include "FreeRTOS.h"
+#include "task.h"
+
 #define UART_BUF_LENGTH_MAX 269
 #define MPY_HEAP_SIZE 1 * 1024 * 1024
 extern int mp_hal_stdin_rx_chr(void);
@@ -44,6 +48,35 @@ static char *stack_top;
 #if MICROPY_ENABLE_GC
 static char heap[MPY_HEAP_SIZE];
 #endif
+
+void task1()
+{
+    while(1)
+    {
+        printf("task1\n");
+        vTaskDelay(1000/portTICK_RATE_MS);
+    }
+}
+
+void task2()
+{
+    while(1)
+    {
+        printf("task2\n");
+        vTaskDelay(1000/portTICK_RATE_MS);
+    }
+}
+
+void test_task()
+{
+    TaskHandle_t Task1Handle;
+    xTaskCreate((TaskFunction_t)task1,"Task1",1024,(void *)NULL,3,&Task1Handle);
+    printf("task1:%x\n",Task1Handle);
+
+    TaskHandle_t Task2Handle;
+    xTaskCreate((TaskFunction_t)task2,"Task2",1024,(void *)NULL,2,&Task2Handle);
+    printf("task2:%x\n",Task2Handle);
+}
 
 void do_str(const char *src, mp_parse_input_kind_t input_kind);
 const uint8_t Banner[] = {"\n __  __              _____  __   __  _____   __     __ \n\
@@ -65,6 +98,7 @@ int main()
     // sysctl_pll_set_freq(SYSCTL_PLL1,160000000);
     // uarths_init();
     printf(Banner);
+    test_task();
     printf("[MAIXPY]Pll0:freq:%d\r\n",sysctl_clock_get_freq(SYSCTL_CLOCK_PLL0));
     printf("[MAIXPY]Pll1:freq:%d\r\n",sysctl_clock_get_freq(SYSCTL_CLOCK_PLL1));
     // sysctl->power_sel.power_mode_sel6 = 1;

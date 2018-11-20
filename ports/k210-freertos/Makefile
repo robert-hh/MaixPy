@@ -1,4 +1,4 @@
-.PHONY: clean_all build packfs pack patch_py recover_py
+.PHONY: clean_all build packfs pack patch_py recover_py micropython micropython.bin
 include ../../py/mkenv.mk
 
 CROSS_COMPILE ?= 
@@ -410,10 +410,10 @@ all: $(OBJ) $(CXX_OBJ)
 	make $(OUT_BIN_FILENAME)
 
 # PROG = micropython
-
+TF_LITE_LD_FLAGS ?= tensorflow-lite/lib/libtensorflow-lite.a
 micropython:
 	$(ECHO) "LINK $@"
-	$(Q)$(CC)  -o $@ $(OBJ) $(LIBS) $(LDFLAGS) $(CFLAGS)
+	$(Q)$(CC)  -o $@ $(OBJ) $(LIBS) $(LDFLAGS) $(CFLAGS) $(TF_LITE_LD_FLAGS)
 	$(Q)$(SIZE) $@
 
 $(OUT_BIN_FILENAME): micropython

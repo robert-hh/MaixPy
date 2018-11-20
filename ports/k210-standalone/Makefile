@@ -6,7 +6,7 @@ SDK_PATH ?= kendryte-standalone-sdk
 MPY_MOD_PATH ?= mpy-mod
 FS_PORT_PATH ?= spiffs-port
 BOARD_DRIVERS_PATH ?= board-drivers
-OUT_BIN_FILENAME ？= micropython.bin
+OUT_BIN_FILENAME？= micropython.bin
 
 # qstr definitions (must come before including py.mk)
 QSTR_DEFS = qstrdefsport.h
