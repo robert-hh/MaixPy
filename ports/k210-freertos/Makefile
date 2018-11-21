@@ -1,7 +1,8 @@
 .PHONY: clean_all build packfs pack patch_py recover_py micropython micropython.bin
 include ../../py/mkenv.mk
 
-CROSS_COMPILE ?= 
+CROSS_COMPILE__BIN ?=/home/xiaohui/workspace/dan/kendryte-toolchain/bin
+CROSS_COMPILE ?= $(CROSS_COMPILE__BIN)/riscv64-unknown-elf-
 SDK_PATH ?= kendryte-freertos-sdk
 MPY_MOD_PATH ?= mpy-mod
 FS_PORT_PATH ?= spiffs-port
@@ -66,113 +67,47 @@ C_DEFINES += -DCONFIG_LOG_COLORS \
 			 -DLOG_KERNEL \
 			 -D__riscv64
 
-ARCH_FLAGS = -march=rv64imafdc -mabi=lp64d
-
-BOTH_FLAGS = -mcmodel=medany \
-			 -fno-common \
-			 -ffunction-sections \
-			 -fdata-sections \
-			 -fstrict-volatile-bitfields \
-			 -fno-zero-initialized-in-bss \
-			 -Os \
-			 -ggdb \
-			 -Wall \
-			 -Werror=all \
-			 -Wno-error=unused-function \
-			 -Wno-error=unused-but-set-variable \
-			 -Wno-error=unused-variable \
-			 -Wno-error=deprecated-declarations \
-			 -Wextra \
-			 -Werror=frame-larger-than=65536 \
-			 -Wno-unused-parameter \
-			 -Wno-sign-compare \
-			 -Wno-error=missing-braces \
-			 -Wno-error=return-type \
-			 -Wno-error=pointer-sign \
-			 -Wno-missing-braces \
-			 -Wno-pointer-to-int-cast \
-			 -Wno-strict-aliasing \
-			 -Wno-implicit-fallthrough \
-			 -Linclude/
-
-CFLAGS_RV64_K210 = -lm \
-				   -mfdiv \
-				   -mdiv \
-				   -std=gnu11 \
-				   -Wno-old-style-declaration \
-				   -g \
-				   $(C_DEFINES) \
-				   $(BOTH_FLAGS)
-
 CFLAGS = $(INC) \
 		 -std=gnu11 \
 		 $(CFLAGS_RV64_K210) \
 		 -g -Wno-error=unused-label \
 		 -Wno-error=unused-const-variable= \
 		 -Wno-error=format= \
-		 -Wno-error=parentheses
+		 -Wno-error=parentheses \
+		 -Wno-error=format= \
+		 -Wno=error=pointer-sign
 
 
 CFLAGS_MOD += $(C_DEFINES)
 CFLAGS += $(CFLAGS_MOD)
 
-LDPPFLAGS += \
-	-DDUSE_BINUTILS_2_19=1
-LDFLAGS += --gc-sections
-
-LDFLAGS = -lm $(BOTH_FLAGS) -T $(SDK_PATH)/lds/kendryte.ld \
-        -nostartfiles \
-        -Wl,--gc-sections \
-        -Wl,-static \
-        -Wl,--start-group \
-        -Wl,--whole-archive \
-        -Wl,--no-whole-archive \
-        -Wl,--end-group \
-        -Wl,-EL \
-		-Wl,--start-group \
-        -lm -lc -lstdc++\
-        -Wl,--end-group
-
-LDFLAGS += \
-	-mcmodel=medany \
-	-march=rv64imafdc \
-	-fno-common \
-	-ffunction-sections \
-	-fdata-sections \
-	-fstrict-volatile-bitfields \
-	-fno-zero-initialized-in-bss \
-	-O2 \
-	-ggdb \
-	-std=gnu11 \
-	-Wall \
-	-Werror=all \
-	-Wno-error=unused-function \
-	-Wno-error=unused-variable \
-	-Wno-error=deprecated-declarations \
-	-Wno-error=maybe-uninitialized \
-	-Wextra \
-	-Werror=frame-larger-than=65536 \
-	-Wno-unused-parameter \
-	-Wno-unused-function \
-	-Wno-implicit-fallthrough \
-	-Wno-sign-compare \
-	-Wno-error=missing-braces \
-	-Wno-old-style-declaration \
-	-g   \
-	-nostartfiles \
-	-static \
-	-Wl,--gc-sections \
-	-Wl,-static \
-	-Wl,--start-group \
-	-Wl,--whole-archive \
-	-Wl,--no-whole-archive \
-	-Wl,--end-group \
-	-Wl,-EL \
-	-Wl,--start-group \
-	-lc \
-	-lm \
-	-lstdc++ \
-	-lm 
+LDFLAGS = \
+		-mcmodel=medany \
+		-march=rv64imafdc \
+		-fno-common \
+		-ffunction-sections \
+		-fdata-sections \
+		-fstrict-volatile-bitfields \
+		-fno-zero-initialized-in-bss \
+		-O2 \
+		-ggdb \
+		-std=gnu11 \
+		-Wall \
+		-Werror=all \
+		-Wno-error=unused-function \
+		-Wno-error=unused-but-set-variable \
+		-Wno-error=unused-variable \
+		-Wno-error=deprecated-declarations \
+		-Wno-error=maybe-uninitialized \
+		-Wextra \
+		-Werror=frame-larger-than=65536 \
+		-Wno-unused-parameter \
+		-Wno-unused-function \
+		-Wno-implicit-fallthrough \
+		-Wno-sign-compare \
+		-Wno-error=missing-braces \
+		-Wno-old-style-declaration \
+		-g
 
 	# -Wno-error=unused-but\
 	# -Wunused-variable \
@@ -232,25 +167,30 @@ FS_SRC_C = \
 		spiffs/src/spiffs_nucleus.c \
 		file_io.c
 
-BOARD_DRIVERS = $(BOARD_DRIVERS_PATH)/lcd.c \
-				$(BOARD_DRIVERS_PATH)/st7789.c \
-				$(BOARD_DRIVERS_PATH)/ov2640.c \
-				$(BOARD_DRIVERS_PATH)/w25qxx.c \
-				$(BOARD_DRIVERS_PATH)/face_detect.c \
-				$(BOARD_DRIVERS_PATH)/region_layer.c \
-				$(BOARD_DRIVERS_PATH)/uart_core.c \
-				$(BOARD_DRIVERS_PATH)/ws2812b.c \
-				$(BOARD_DRIVERS_PATH)/esp8285.c
+BOARD_DRIVERS = $(BOARD_DRIVERS_PATH)/w25qxx.c 
+				# $(BOARD_DRIVERS_PATH)/lcd.c \
+				# $(BOARD_DRIVERS_PATH)/st7789.c \
+				# $(BOARD_DRIVERS_PATH)/ov2640.c \
+				# $(BOARD_DRIVERS_PATH)/face_detect.c \
+				# $(BOARD_DRIVERS_PATH)/region_layer.c \
+				# $(BOARD_DRIVERS_PATH)/uart_core.c \
+				# $(BOARD_DRIVERS_PATH)/ws2812b.c \
+				# $(BOARD_DRIVERS_PATH)/esp8285.c
 
 MPY_LIB_SRC = lib/timeutils/timeutils.c \
 			  lib/utils/sys_stdio_mphal.c
 
 # $(MODULES_SRC_C)
-# $(BOARD_DRIVERS)
+# 
 SRC_C = \
+		$(BOARD_DRIVERS) \
 		main.c \
 		board-drivers/uart_core.c \
 		temp-test.c \
+		$(MPY_LIB_SRC) \
+		$(FS_SRC_C)
+
+BSP_SRC_C = \
 		$(SDK_PATH)/lib/bsp/entry_user.c \
 		$(SDK_PATH)/lib/bsp/interrupt.c \
 		$(SDK_PATH)/lib/bsp/printf.c \
@@ -258,7 +198,21 @@ SRC_C = \
 		$(SDK_PATH)/lib/bsp/syscalls.c \
 		$(SDK_PATH)/lib/bsp/dump.c \
 		$(SDK_PATH)/lib/bsp/except.c \
-		$(SDK_PATH)/lib/bsp/config/pin_cfg.c \
+		$(SDK_PATH)/lib/bsp/config/pin_cfg.c
+
+THRID_PARTY_SRC_C = \
+		$(SDK_PATH)/third_party/fatfs/source/ff.c \
+		$(SDK_PATH)/third_party/fatfs/source/ffsystem.c \
+		$(SDK_PATH)/third_party/fatfs/source/ffunicode.c
+
+HAL_SRC_C = \
+		$(SDK_PATH)/lib/hal/clint.c \
+		$(SDK_PATH)/lib/hal/fpioa.c \
+		$(SDK_PATH)/lib/hal/sysctl.c \
+		$(SDK_PATH)/lib/hal/uarths.c \
+		$(SDK_PATH)/lib/hal/utility.c
+
+FREEERTOS_SRC_C =	\
 		$(SDK_PATH)/lib/freertos/core_sync.c \
 		$(SDK_PATH)/lib/freertos/croutine.c \
 		$(SDK_PATH)/lib/freertos/event_groups.c \
@@ -270,17 +224,8 @@ SRC_C = \
 		$(SDK_PATH)/lib/freertos/queue.c \
 		$(SDK_PATH)/lib/freertos/stream_buffer.c \
 		$(SDK_PATH)/lib/freertos/tasks.c \
-		$(SDK_PATH)/lib/freertos/timers.c \
-		$(SDK_PATH)/lib/hal/clint.c \
-		$(SDK_PATH)/lib/hal/fpioa.c \
-		$(SDK_PATH)/lib/hal/sysctl.c \
-		$(SDK_PATH)/lib/hal/uarths.c \
-		$(SDK_PATH)/lib/hal/utility.c \
-		$(SDK_PATH)/third_party/fatfs/source/ff.c \
-		$(SDK_PATH)/third_party/fatfs/source/ffsystem.c \
-		$(SDK_PATH)/third_party/fatfs/source/ffunicode.c \
-		$(MPY_LIB_SRC) \
-		$(FS_SRC_C)
+		$(SDK_PATH)/lib/freertos/timers.c
+
 
 SRC_CXX = \
 		dso_handle.cpp \
@@ -316,19 +261,20 @@ SRC_CXX = \
 		$(SDK_PATH)/lib/posix/utils.cpp
 
 CFLAGS = $(INC) \
-		 -std=gnu11 \
-		 $(CFLAGS_RV64_K210) \
-		 -g -Wno-error=unused-label \
-		 -Wno-error=unused-const-variable= \
-		 -Wno-error=format= \
-		 -Wno-error=parentheses \
-		 -mcmodel=medany \
+		-DCONFIG_LOG_COLORS \
+		-DCONFIG_LOG_ENABLE \
+		-DCONFIG_LOG_LEVEL=LOG_INFO \
+		-DDEBUG=1 \
+		-DLOG_KERNEL \
+		-D__riscv64 \
+		-mcmodel=medany \
+		-march=rv64imafdc \
 		-fno-common \
 		-ffunction-sections \
 		-fdata-sections \
 		-fstrict-volatile-bitfields \
 		-fno-zero-initialized-in-bss \
-		-Os \
+		-O2 \
 		-ggdb \
 		-std=gnu11 \
 		-Wall \
@@ -336,47 +282,52 @@ CFLAGS = $(INC) \
 		-Wno-error=unused-but-set-variable \
 		-Wno-error=unused-variable \
 		-Wno-error=deprecated-declarations \
+		-Wno-error=maybe-uninitialized \
 		-Wextra \
 		-Werror=frame-larger-than=65536 \
 		-Wno-unused-parameter \
+		-Wno-unused-function \
+		-Wno-implicit-fallthrough \
 		-Wno-sign-compare \
 		-Wno-error=missing-braces \
-		-Wno-error=return-type \
-		-Wno-error=pointer-sign \
-		-Wno-missing-braces \
-		-Wno-pointer-to-int-cast \
-		-Wno-strict-aliasing \
-		-Wno-implicit-fallthrough \
-		-Wno-old-style-declaration
+		-Wno-old-style-declaration \
+		-g \
+		-Wno-error=format= \
+		-Wno-error=pointer-sign
 
 CXXFLAGS := \
+		-DCONFIG_LOG_COLORS \
+		-DCONFIG_LOG_ENABLE \
+		-DCONFIG_LOG_LEVEL=LOG_INFO \
+		-DDEBUG=1 \
+		-DLOG_KERNEL \
+		-D__riscv64 \
 		-mcmodel=medany \
+		-march=rv64imafdc \
 		-fno-common \
 		-ffunction-sections \
 		-fdata-sections \
 		-fstrict-volatile-bitfields \
 		-fno-zero-initialized-in-bss \
-		-Os \
+		-O2 \
 		-ggdb \
 		-std=gnu++17 \
 		-Wall \
-		-Werror=all \
 		-Wno-error=unused-function \
 		-Wno-error=unused-but-set-variable \
 		-Wno-error=unused-variable \
 		-Wno-error=deprecated-declarations \
+		-Wno-error=maybe-uninitialized \
 		-Wextra \
 		-Werror=frame-larger-than=65536 \
 		-Wno-unused-parameter \
+		-Wno-unused-function \
+		-Wno-implicit-fallthrough \
 		-Wno-sign-compare \
 		-Wno-error=missing-braces \
-		-Wno-error=return-type \
-		-Wno-error=pointer-sign \
-		-Wno-missing-braces \
-		-Wno-pointer-to-int-cast \
-		-Wno-strict-aliasing \
-		-Wno-implicit-fallthrough \
-		-lstdc++ 
+		-g \
+		-Wno-error=format= \
+		-Wno-error=pointer-sign
 
 PY_SRC_C = \
         help.c \
@@ -394,9 +345,17 @@ SRC_QSTR += $(SRC_C)
 # Append any auto-generated sources that are needed by sources listed in SRC_QSTR
 SRC_QSTR_AUTO_DEPS +=
 
-OBJ = $(PY_O) $(addprefix $(BUILD)/, $(SRC_C:.c=.o)) $(addprefix $(BUILD)/, $(SRC_CXX:.cpp=.o)) $(addprefix $(BUILD)/, $(PY_SRC_C:.c=.o)) $(addprefix $(BUILD)/, $(ASM_SRCS:.S=.o))
-CXX_OBJ = $(SRC_CXX:.cpp=.o)
+SRC_C_OBJ = $(PY_O) $(addprefix $(BUILD)/, $(SRC_C:.c=.o)) $(addprefix $(BUILD)/, $(PY_SRC_C:.c=.o)) 
+
+BSP_OBJ = $(addprefix $(BUILD)/, $(BSP_SRC_C:.c=.o)) $(addprefix $(BUILD)/, $(ASM_SRCS:.S=.o))
+THRID_PARTY_OBJ = $(addprefix $(BUILD)/, $(THRID_PARTY_SRC_C:.c=.o))
+HAL_OBJ = $(addprefix $(BUILD)/, $(HAL_SRC_C:.c=.o))
+FREERTOS_OBJ = $(addprefix $(BUILD)/, $(FREEERTOS_SRC_C:.c=.o))
+OBJ += $(SRC_C_OBJ) $(BSP_OBJ) $(THRID_PARTY_OBJ) $(HAL_OBJ) $(FREERTOS_OBJ) 
+
+CXX_OBJ = $(SRC_CXX:.cpp=.o)#  libbsp.a libdrivers.a libfreertos.a libhal.a libposix.a $(addprefix $(BUILD)/, $(SRC_CXX:.cpp=.o))
 CXX_OUTPUT_OBJS = $(addprefix $(BUILD)/, $(SRC_CXX:.cpp=.o))
+# OBJ += $(CXX_OUTPUT_OBJS)
 $(BUILD)/_frozen_mpy.c: frozentest.mpy $(BUILD)/genhdr/qstrdefs.generated.h
 	$(ECHO) "MISC freezing bytecode"
 	$(Q)$(TOP)/tools/mpy-tool.py -f -q $(BUILD)/genhdr/qstrdefs.preprocessed.h -mlongint-impl=none $< > $@
@@ -404,16 +363,51 @@ $(BUILD)/_frozen_mpy.c: frozentest.mpy $(BUILD)/genhdr/qstrdefs.generated.h
 
 $(CXX_OBJ):%.o:%.cpp
 	mkdir -p $(dir $(BUILD)/$@) 
-	$(Q)$(CXX)  -o $(BUILD)/$@ -c $< -I$(INC) $(LIBS) $(LDFLAGS) $(CXXFLAGS) -lstdc++
+	$(Q)$(CXX)  -o $(BUILD)/$@ -c $< -I$(INC) $(LIBS) $(CXXFLAGS) -lstdc++
+
+# PROG = micropython
+TF_LITE_LD_FLAGS ?= tensorflow-lite/lib/libtensorflow-lite.a
+TEST_FALGS ?= $(CROSS_COMPILE__BIN)/../lib/gcc/riscv64-unknown-elf/8.2.0/crti.o 
+TEST_FALGS += $(CROSS_COMPILE__BIN)/../lib/gcc/riscv64-unknown-elf/8.2.0/crtbegin.o $(SRC_C_OBJ)
+TEST_FALGS += $(CROSS_COMPILE__BIN)/../lib/gcc/riscv64-unknown-elf/8.2.0/crtend.o
+TEST_FALGS += $(CROSS_COMPILE__BIN)/../lib/gcc/riscv64-unknown-elf/8.2.0/crtn.o
+
+LDFLAGS += \
+		-nostartfiles \
+		-static \
+		-Wl,--gc-sections \
+		-Wl,-static \
+		-Wl,--start-group \
+		-Wl,--whole-archive \
+		-Wl,--no-whole-archive \
+		-Wl,--end-group \
+		-Wl,-EL \
+		-T \
+		"$(SDK_PATH)/lds/kendryte.ld" \
+		$(TEST_FALGS) \
+		-Wl,--start-group \
+		-lm \
+		$(FREERTOS_OBJ) \
+		-latomic \
+		$(BSP_OBJ) \
+		-lc \
+		-lstdc++ \
+		$(CXX_OUTPUT_OBJS) \
+		-Wl,--end-group \
+		$(THRID_PARTY_OBJ) \
+		$(HAL_OBJ) \
+		-lm \
+		-lstdc++ \
+		-lm
 
 all: $(OBJ) $(CXX_OBJ)
 	make $(OUT_BIN_FILENAME)
 
-# PROG = micropython
-TF_LITE_LD_FLAGS ?= tensorflow-lite/lib/libtensorflow-lite.a
+
 micropython:
 	$(ECHO) "LINK $@"
-	$(Q)$(CC)  -o $@ $(OBJ) $(LIBS) $(LDFLAGS) $(CFLAGS) $(TF_LITE_LD_FLAGS)
+	$(Q)$(CC)  -o $@ $(LIBS) $(LDFLAGS) $(CFLAGS) $(TF_LITE_LD_FLAGS)
+	# $(Q)$(CC) -o $@ $(OBJ) -mcmodel=medany -march=rv64imafdc -fno-common -ffunction-sections -fdata-sections -fstrict-volatile-bitfields -fno-zero-initialized-in-bss -O2 -ggdb -std=gnu11 -Wall -Werror=all -Wno-error=unused-function -Wno-error=unused-but-set-variable -Wno-error=unused-variable -Wno-error=deprecated-declarations -Wno-error=maybe-uninitialized -Wextra -Werror=frame-larger-than=65536 -Wno-unused-parameter -Wno-unused-function -Wno-implicit-fallthrough -Wno-sign-compare -Wno-error=missing-braces -Wno-old-style-declaration -g   -nostartfiles -static -Wl,--gc-sections -Wl,-static -Wl,--start-group -Wl,--whole-archive -Wl,--no-whole-archive -Wl,--end-group -Wl,-EL -T "/home/xiaohui/workspace/dan/temp/kendryte-freertos-sdk/lds/kendryte.ld" "/home/xiaohui/workspace/dan/kendryte-toolchain/bin/../lib/gcc/riscv64-unknown-elf/8.2.0/crti.o" "/home/xiaohui/workspace/dan/kendryte-toolchain/bin/../lib/gcc/riscv64-unknown-elf/8.2.0/crtbegin.o" "/home/xiaohui/workspace/dan/kendryte-toolchain/bin/../lib/gcc/riscv64-unknown-elf/8.2.0/crtend.o" "/home/xiaohui/workspace/dan/kendryte-toolchain/bin/../lib/gcc/riscv64-unknown-elf/8.2.0/crtn.o" -Wl,--start-group -lm libfreertos.a -latomic libbsp.a -lc -lstdc++ libdrivers.a -Wl,--end-group libfreertos.a libhal.a -lm libfatfs.a -lstdc++ -lm 
 	$(Q)$(SIZE) $@
 
 $(OUT_BIN_FILENAME): micropython
@@ -451,4 +445,3 @@ pack_kfpkg: packfs
 	pack/pack_zip.sh
 
 include $(TOP)/py/mkrules.mk
-
