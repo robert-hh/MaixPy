@@ -2,7 +2,7 @@
 include ../../py/mkenv.mk
 
 CROSS_COMPILE_BIN ?=/home/xiaohui/workspace/dan/kendryte-toolchain/bin
-CROSS_COMPILE ?= $(CROSS_COMPILE__BIN)/riscv64-unknown-elf-
+CROSS_COMPILE ?= $(CROSS_COMPILE_BIN)/riscv64-unknown-elf-
 SDK_PATH ?= kendryte-freertos-sdk
 MPY_MOD_PATH ?= mpy-mod
 FS_PORT_PATH ?= spiffs-port
