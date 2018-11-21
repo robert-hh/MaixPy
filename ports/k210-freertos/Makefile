@@ -367,10 +367,10 @@ $(CXX_OBJ):%.o:%.cpp
 
 # PROG = micropython
 TF_LITE_LD_FLAGS ?= tensorflow-lite/lib/libtensorflow-lite.a
-TEST_FALGS ?= $(CROSS_COMPILE__BIN)/../lib/gcc/riscv64-unknown-elf/8.2.0/crti.o 
-TEST_FALGS += $(CROSS_COMPILE__BIN)/../lib/gcc/riscv64-unknown-elf/8.2.0/crtbegin.o $(SRC_C_OBJ)
-TEST_FALGS += $(CROSS_COMPILE__BIN)/../lib/gcc/riscv64-unknown-elf/8.2.0/crtend.o
-TEST_FALGS += $(CROSS_COMPILE__BIN)/../lib/gcc/riscv64-unknown-elf/8.2.0/crtn.o
+TEST_FALGS ?= $(CROSS_COMPILE_BIN)/../lib/gcc/riscv64-unknown-elf/8.2.0/crti.o 
+TEST_FALGS += $(CROSS_COMPILE_BIN)/../lib/gcc/riscv64-unknown-elf/8.2.0/crtbegin.o $(SRC_C_OBJ)
+TEST_FALGS += $(CROSS_COMPILE_BIN)/../lib/gcc/riscv64-unknown-elf/8.2.0/crtend.o
+TEST_FALGS += $(CROSS_COMPILE_BIN)/../lib/gcc/riscv64-unknown-elf/8.2.0/crtn.o
 
 LDFLAGS += \
 		-nostartfiles \
