@@ -33,12 +33,12 @@
 #include "w25qxx.h"
 #include "plic.h"
 #include "uarths.h"
-#include "lcd.h"
 #include "spiffs-port.h"
 #include <malloc.h>
 
 #include "FreeRTOS.h"
 #include "task.h"
+#include <devices.h>
 
 #define UART_BUF_LENGTH_MAX 269
 #define MPY_HEAP_SIZE 1 * 1024 * 1024
@@ -54,8 +54,8 @@ void task1()
     while(1)
     {
         printf("task1\n");
-        vTaskDelay(1000/portTICK_RATE_MS);
-    }
+        vTaskDelay(10000/portTICK_RATE_MS);
+    }                                                                                                                                       
 }
 
 void task2()
@@ -63,7 +63,7 @@ void task2()
     while(1)
     {
         printf("task2\n");
-        vTaskDelay(1000/portTICK_RATE_MS);
+        vTaskDelay(13000/portTICK_RATE_MS);
     }
 }
 
@@ -71,13 +71,14 @@ void test_task()
 {
     TaskHandle_t Task1Handle;
     xTaskCreate((TaskFunction_t)task1,"Task1",1024,(void *)NULL,3,&Task1Handle);
-    printf("task1:%x\n",Task1Handle);
+    //printf("task1:%x\n",Task1Handle);
 
     TaskHandle_t Task2Handle;
     xTaskCreate((TaskFunction_t)task2,"Task2",1024,(void *)NULL,2,&Task2Handle);
-    printf("task2:%x\n",Task2Handle);
+    //printf("task2:%x\n",Task2Handle);
 }
 
+handle_t spi3;
 void do_str(const char *src, mp_parse_input_kind_t input_kind);
 const uint8_t Banner[] = {"\n __  __              _____  __   __  _____   __     __ \n\
 |  \\/  |     /\\     |_   _| \\ \\ / / |  __ \\  \\ \\   / /\n\
@@ -96,26 +97,20 @@ int main()
     // sysctl_pll_set_freq(SYSCTL_PLL0,320000000);
     // sysctl_pll_enable(SYSCTL_PLL1);
     // sysctl_pll_set_freq(SYSCTL_PLL1,160000000);
-    // uarths_init();
     printf(Banner);
-    test_task();
+    //test_task();
     printf("[MAIXPY]Pll0:freq:%d\r\n",sysctl_clock_get_freq(SYSCTL_CLOCK_PLL0));
     printf("[MAIXPY]Pll1:freq:%d\r\n",sysctl_clock_get_freq(SYSCTL_CLOCK_PLL1));
     // sysctl->power_sel.power_mode_sel6 = 1;
     // sysctl->power_sel.power_mode_sel7 = 1;
-    //uarths_set_irq(UARTHS_RECEIVE,on_irq_uarths_recv,NULL,1);
-    // uarths_config(115200,UARTHS_STOP_1);
-    // uarths_init();
     uint8_t manuf_id, device_id;
-    // while (1) {
-    //     w25qxx_init(3);
-    //     w25qxx_read_id(&manuf_id, &device_id);
-    //     if (manuf_id != 0xFF && manuf_id != 0x00 && device_id != 0xFF && device_id != 0x00)
-    //         break;
-    // }
-    // w25qxx_enable_quad_mode();
-    // printf("[MAIXPY]Flash:0x%02x:0x%02x\n", manuf_id, device_id);
-    // my_spiffs_init();
+    spi3 = io_open("/dev/spi3");
+    configASSERT(spi3);
+    printf("test\n");
+    w25qxx_init(spi3);
+    w25qxx_read_id(&manuf_id, &device_id);
+    printf("[MAIXPY]Flash:0x%02x:0x%02x\n", manuf_id, device_id);
+    my_spiffs_init();
     int stack_dummy;
     stack_top = (char*)&stack_dummy;
     #if MICROPY_ENABLE_GC

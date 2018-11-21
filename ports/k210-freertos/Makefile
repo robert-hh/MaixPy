@@ -1,7 +1,7 @@
 .PHONY: clean_all build packfs pack patch_py recover_py micropython micropython.bin
 include ../../py/mkenv.mk
 
-CROSS_COMPILE__BIN ?=/home/xiaohui/workspace/dan/kendryte-toolchain/bin
+CROSS_COMPILE_BIN ?=/home/xiaohui/workspace/dan/kendryte-toolchain/bin
 CROSS_COMPILE ?= $(CROSS_COMPILE__BIN)/riscv64-unknown-elf-
 SDK_PATH ?= kendryte-freertos-sdk
 MPY_MOD_PATH ?= mpy-mod
@@ -127,27 +127,29 @@ LIBS =
 
 MODULES_SRC_C= \
 		$(MPY_MOD_PATH)/uos/moduos.c \
-		$(MPY_MOD_PATH)/machine/modmachine.c \
-		$(MPY_MOD_PATH)/machine/machine_uarths.c \
-		$(MPY_MOD_PATH)/machine/machine_uart.c \
-		$(MPY_MOD_PATH)/machine/machine_pin.c \
-		$(MPY_MOD_PATH)/machine/machine_pwm.c \
-		$(MPY_MOD_PATH)/machine/machine_timer.c \
-		$(MPY_MOD_PATH)/machine/machine_st7789.c \
-		$(MPY_MOD_PATH)/machine/machine_ov2640.c \
-		$(MPY_MOD_PATH)/machine/machine_burner.c \
-		$(MPY_MOD_PATH)/machine/machine_face_detect.c \
-		$(MPY_MOD_PATH)/machine/machine_spiflash.c \
-		$(MPY_MOD_PATH)/machine/machine_zmodem.c \
-		$(MPY_MOD_PATH)/machine/machine_fpioa.c \
-		$(MPY_MOD_PATH)/machine/machine_ws2812.c \
-		$(MPY_MOD_PATH)/machine/machine_test.c \
-		$(MPY_MOD_PATH)/machine/machine_devmem.c\
-		$(MPY_MOD_PATH)/machine/machine_esp8285.c\
-		$(MPY_MOD_PATH)/app/modapp.c \
-		$(MPY_MOD_PATH)/app/vi.c \
-		$(MPY_MOD_PATH)/app/app_vi.c\
-		$(MPY_MOD_PATH)/socket/modsocket.c
+
+
+		# $(MPY_MOD_PATH)/machine/modmachine.c \
+		# $(MPY_MOD_PATH)/machine/machine_uarths.c \
+		# $(MPY_MOD_PATH)/machine/machine_uart.c \
+		# $(MPY_MOD_PATH)/machine/machine_pin.c \
+		# $(MPY_MOD_PATH)/machine/machine_pwm.c \
+		# $(MPY_MOD_PATH)/machine/machine_timer.c \
+		# $(MPY_MOD_PATH)/machine/machine_st7789.c \
+		# $(MPY_MOD_PATH)/machine/machine_ov2640.c \
+		# $(MPY_MOD_PATH)/machine/machine_burner.c \
+		# $(MPY_MOD_PATH)/machine/machine_face_detect.c \
+		# $(MPY_MOD_PATH)/machine/machine_spiflash.c \
+		# $(MPY_MOD_PATH)/machine/machine_zmodem.c \
+		# $(MPY_MOD_PATH)/machine/machine_fpioa.c \
+		# $(MPY_MOD_PATH)/machine/machine_ws2812.c \
+		# $(MPY_MOD_PATH)/machine/machine_test.c \
+		# $(MPY_MOD_PATH)/machine/machine_devmem.c\
+		# $(MPY_MOD_PATH)/machine/machine_esp8285.c\
+		# $(MPY_MOD_PATH)/app/modapp.c \
+		# $(MPY_MOD_PATH)/app/vi.c \
+		# $(MPY_MOD_PATH)/app/app_vi.c\
+		# $(MPY_MOD_PATH)/socket/modsocket.c
 
 
 LIB_SRC_C ?=
@@ -180,13 +182,12 @@ BOARD_DRIVERS = $(BOARD_DRIVERS_PATH)/w25qxx.c
 MPY_LIB_SRC = lib/timeutils/timeutils.c \
 			  lib/utils/sys_stdio_mphal.c
 
-# $(MODULES_SRC_C)
-# 
+
 SRC_C = \
+		$(MODULES_SRC_C) \
 		$(BOARD_DRIVERS) \
 		main.c \
 		board-drivers/uart_core.c \
-		temp-test.c \
 		$(MPY_LIB_SRC) \
 		$(FS_SRC_C)
 
@@ -228,7 +229,6 @@ FREEERTOS_SRC_C =	\
 
 
 SRC_CXX = \
-		dso_handle.cpp \
 		$(SDK_PATH)/lib/bsp/device/aes.cpp \
 		$(SDK_PATH)/lib/bsp/device/dmac.cpp \
 		$(SDK_PATH)/lib/bsp/device/dvp.cpp \

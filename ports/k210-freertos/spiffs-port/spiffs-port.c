@@ -15,7 +15,7 @@ static u8_t spiffs_cache_buf[(SPIFFS_CFG_LOG_PAGE_SZ(fs)+32)*4];
 s32_t k210_sf_read(int addr, int size, char *buf)
 {
     int phy_addr=addr;
-    enum w25qxx_status_t res = w25qxx_read_data(phy_addr, buf, size,W25QXX_QUAD);
+    enum w25qxx_status_t res = w25qxx_read_data(phy_addr, buf, size);
 	#if open_fs_debug
     printf("flash read addr:%x size:%d buf_head:%x %x\n",phy_addr,size,buf[0],buf[1]);
 	#endif
