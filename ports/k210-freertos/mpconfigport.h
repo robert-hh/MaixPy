@@ -64,7 +64,7 @@
 
 extern const struct _mp_print_t mp_debug_print;
 extern const struct _mp_print_t mp_debug_print;
-//#define MICROPY_DEBUG_VERBOSE       (1)
+#define MICROPY_DEBUG_VERBOSE       (0)
 #define MICROPY_DEBUG_PRINTER       (&mp_debug_print)
 
 
@@ -142,9 +142,9 @@ extern const struct _mp_print_t mp_debug_print;
 #define MICROPY_PY_UTIME_MP_HAL             (1)
 
 //thread todo
-//#define MICROPY_PY_THREAD                   (1)
-//#define MICROPY_PY_THREAD_GIL               (1)
-//#define MICROPY_PY_THREAD_GIL_VM_DIVISOR    (32)
+#define MICROPY_PY_THREAD                   (1)
+#define MICROPY_PY_THREAD_GIL               (1)
+#define MICROPY_PY_THREAD_GIL_VM_DIVISOR    (32)
 
 #define MICROPY_VFS                         (0)
 #define MICROPY_VFS_FAT                     (0)

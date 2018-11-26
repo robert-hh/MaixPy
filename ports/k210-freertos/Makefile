@@ -153,7 +153,7 @@ MODULES_SRC_C= \
 
 
 LIB_SRC_C ?=
-MICROPY_FATFS=1
+MICROPY_FATFS=0
 ifeq ($(MICROPY_FATFS), 1)
 LIB_SRC_C += \
 lib/oofatfs/ff.c \
@@ -189,7 +189,9 @@ SRC_C = \
 		main.c \
 		board-drivers/uart_core.c \
 		$(MPY_LIB_SRC) \
-		$(FS_SRC_C)
+		$(FS_SRC_C) \
+		mpthreadport.c \
+		gccollect.c
 
 BSP_SRC_C = \
 		$(SDK_PATH)/lib/bsp/entry_user.c \

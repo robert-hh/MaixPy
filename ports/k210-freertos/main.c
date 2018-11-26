@@ -12,33 +12,39 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-//#include <stdint.h>
+/*****std lib****/
 #include <stdio.h>
-//#include <string.h>
-
-#include "sleep.h"
-#include "encoding.h"
-
+#include <stdlib.h>
+#include <string.h>
+#include <malloc.h>
+/*****mpy****/
 #include "py/compile.h"
 #include "py/runtime.h"
 #include "py/repl.h"
 #include "py/gc.h"
 #include "py/mperrno.h"
+#include "py/stackctrl.h"
 #include "lib/utils/pyexec.h"
+#include "lib/mp-readline/readline.h"
+#include "mpthreadport.h"
+#include "gccollect.h"
+#include "py/mpthread.h"
+/*****bsp****/
+#include "sleep.h"
+#include "encoding.h"
+#include "sysctl.h"
+#include "plic.h"
+#include <devices.h>
+/*****peripheral****/
 #include "fpioa.h"
 #include "gpio.h"
-#include "lib/mp-readline/readline.h"
 #include "timer.h"
-#include "sysctl.h"
 #include "w25qxx.h"
-#include "plic.h"
 #include "uarths.h"
 #include "spiffs-port.h"
-#include <malloc.h>
-
+/*****freeRTOS****/
 #include "FreeRTOS.h"
 #include "task.h"
-#include <devices.h>
 
 #define UART_BUF_LENGTH_MAX 269
 #define MPY_HEAP_SIZE 1 * 1024 * 1024
@@ -49,37 +55,17 @@ static char *stack_top;
 static char heap[MPY_HEAP_SIZE];
 #endif
 
-void task1()
-{
-    while(1)
-    {
-        printf("task1\n");
-        vTaskDelay(10000/portTICK_RATE_MS);
-    }                                                                                                                                       
-}
+#define MP_TASK_PRIORITY        4
+#define MP_TASK_STACK_SIZE      (16 * 1024)
+#define MP_TASK_STACK_LEN       (MP_TASK_STACK_SIZE / sizeof(StackType_t))
 
-void task2()
-{
-    while(1)
-    {
-        printf("task2\n");
-        vTaskDelay(13000/portTICK_RATE_MS);
-    }
-}
-
-void test_task()
-{
-    TaskHandle_t Task1Handle;
-    xTaskCreate((TaskFunction_t)task1,"Task1",1024,(void *)NULL,3,&Task1Handle);
-    //printf("task1:%x\n",Task1Handle);
-
-    TaskHandle_t Task2Handle;
-    xTaskCreate((TaskFunction_t)task2,"Task2",1024,(void *)NULL,2,&Task2Handle);
-    //printf("task2:%x\n",Task2Handle);
-}
+STATIC StaticTask_t mp_task_tcb;
+STATIC StackType_t mp_task_stack[MP_TASK_STACK_LEN] __attribute__((aligned (8)));
+TaskHandle_t mp_main_task_handle;
 
 handle_t spi3;
 void do_str(const char *src, mp_parse_input_kind_t input_kind);
+
 const uint8_t Banner[] = {"\n __  __              _____  __   __  _____   __     __ \n\
 |  \\/  |     /\\     |_   _| \\ \\ / / |  __ \\  \\ \\   / /\n\
 | \\  / |    /  \\      | |    \\ V /  | |__) |  \\ \\_/ / \n\
@@ -88,55 +74,66 @@ const uint8_t Banner[] = {"\n __  __              _____  __   __  _____   __    
 |_|  |_| /_/    \\_\\ |_____| /_/ \\_\\ |_|         |_|\n\
 Official Site:http://www.sipeed.com/\n\
 Wiki:http://maixpy.sipeed.com/\n"};
-int main()
-{
-    //plic_init();
-	// set_csr(mie, MIP_MEIP);
-	// set_csr(mstatus, MSTATUS_MIE);
 
-    // sysctl_pll_set_freq(SYSCTL_PLL0,320000000);
-    // sysctl_pll_enable(SYSCTL_PLL1);
-    // sysctl_pll_set_freq(SYSCTL_PLL1,160000000);
-    printf(Banner);
-    //test_task();
-    printf("[MAIXPY]Pll0:freq:%d\r\n",sysctl_clock_get_freq(SYSCTL_CLOCK_PLL0));
-    printf("[MAIXPY]Pll1:freq:%d\r\n",sysctl_clock_get_freq(SYSCTL_CLOCK_PLL1));
-    // sysctl->power_sel.power_mode_sel6 = 1;
-    // sysctl->power_sel.power_mode_sel7 = 1;
-    uint8_t manuf_id, device_id;
-    spi3 = io_open("/dev/spi3");
-    configASSERT(spi3);
-    printf("test\n");
-    w25qxx_init(spi3);
-    w25qxx_read_id(&manuf_id, &device_id);
-    printf("[MAIXPY]Flash:0x%02x:0x%02x\n", manuf_id, device_id);
-    my_spiffs_init();
-    int stack_dummy;
-    stack_top = (char*)&stack_dummy;
-    #if MICROPY_ENABLE_GC
-    gc_init(heap, heap + sizeof(heap));
-    #endif
-    mp_init();
-    //readline_init0();
-    //readline_process_char(27);
-    pyexec_frozen_module("boot.py");
+void mp_task(void *pvParameter) {
+		volatile uint32_t sp = (uint32_t)get_sp();
+#if MICROPY_PY_THREAD
+		mp_thread_init(&mp_task_stack[0], MP_TASK_STACK_LEN);
+#endif
+soft_reset:
+		// initialise the stack pointer for the main thread
+		mp_stack_set_top((void *)sp);
+		mp_stack_set_limit(MP_TASK_STACK_SIZE - 1024);
+#if MICROPY_ENABLE_GC
+		gc_init(heap, heap + sizeof(heap));
+#endif
+		mp_init();
     #if MICROPY_REPL_EVENT_DRIVEN
-        pyexec_event_repl_init();
-        char c = 0;
-        for (;;) {
-            int cnt = uarths_read(&c,1);
-            if(cnt==0){continue;}
-            if(pyexec_event_repl_process_char(c)) {
-                break;
-            }
-        }
+	    	readline_init0();
+            readline_process_char(27);
+			pyexec_event_repl_init();
+			//pyexec_frozen_module("boot.py");
+			char c = 0;
+   			MP_THREAD_GIL_EXIT();//given gil
+			for (;;) {
+				int cnt = uarths_read(&c,1);
+				if(cnt==0){continue;}
+				if(pyexec_event_repl_process_char(c)) {
+					break;
+				}
+			}
     #else
-        pyexec_friendly_repl();
+			pyexec_friendly_repl();
     #endif
-    mp_deinit();
-    // msleep(1);
-    printf("prower off\n");
-    return 0;
+		mp_deinit();
+		// msleep(1);
+		printf("prower off\n");
+		return 0;
+}
+int main()
+{		
+	/*todo interrupt init*/
+	printf(Banner);
+	printf("[MAIXPY]Pll0:freq:%d\r\n",sysctl_clock_get_freq(SYSCTL_CLOCK_PLL0));
+	printf("[MAIXPY]Pll1:freq:%d\r\n",sysctl_clock_get_freq(SYSCTL_CLOCK_PLL1));
+	sysctl_set_power_mode(SYSCTL_POWER_BANK6,SYSCTL_POWER_V33);
+	sysctl_set_power_mode(SYSCTL_POWER_BANK7,SYSCTL_POWER_V33);
+	
+	uint8_t manuf_id, device_id;
+	spi3 = io_open("/dev/spi3");
+	configASSERT(spi3);
+	w25qxx_init(spi3);
+	w25qxx_read_id(&manuf_id, &device_id);
+	printf("[MAIXPY]Flash:0x%02x:0x%02x\n", manuf_id, device_id);
+	my_spiffs_init();
+	
+	xTaskCreateAtProcessor(0, // processor
+					     mp_task, // function entry
+					     "mp_task", //task name
+					     MP_TASK_STACK_LEN, //stack_deepth
+					     NULL, //function arg
+					     MP_TASK_PRIORITY, //task priority
+					     &mp_main_task_handle);//task handl
 }
 void do_str(const char *src, mp_parse_input_kind_t input_kind) {
     nlr_buf_t nlr;
@@ -155,16 +152,6 @@ void do_str(const char *src, mp_parse_input_kind_t input_kind) {
 
 void nlr_jump_fail(void *val) {
     while (1);
-}
-
-void gc_collect(void) {
-    // WARNING: This gc_collect implementation doesn't try to get root
-    // pointers from CPU registers, and thus may function incorrectly.
-    void *dummy;
-    gc_collect_start();
-    gc_collect_root(&dummy, ((mp_uint_t)stack_top - (mp_uint_t)&dummy) / sizeof(mp_uint_t));
-    gc_collect_end();
-    gc_dump_info();
 }
 
 #if !MICROPY_DEBUG_PRINTERS
