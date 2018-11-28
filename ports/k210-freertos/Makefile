@@ -127,9 +127,8 @@ LIBS =
 
 MODULES_SRC_C= \
 		$(MPY_MOD_PATH)/uos/moduos.c \
-
-
-		# $(MPY_MOD_PATH)/machine/modmachine.c \
+		$(MPY_MOD_PATH)/machine/modmachine.c \
+		$(MPY_MOD_PATH)/machine/machine_fpioa.c \
 		# $(MPY_MOD_PATH)/machine/machine_uarths.c \
 		# $(MPY_MOD_PATH)/machine/machine_uart.c \
 		# $(MPY_MOD_PATH)/machine/machine_pin.c \

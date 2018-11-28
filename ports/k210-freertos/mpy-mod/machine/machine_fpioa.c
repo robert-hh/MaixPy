@@ -1,4 +1,3 @@
-
 #include <stdio.h>
 #include <string.h>
 #include <malloc.h>
@@ -27,22 +26,29 @@ const mp_obj_type_t machine_fpioa_type;
 
 
 STATIC mp_obj_t machine_set_function(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args) {
-		enum {
-			ARG_pin,
-			ARG_func,
-		};
-		static const mp_arg_t allowed_args[] = {
-			{ MP_QSTR_pin, 	MP_ARG_INT, {.u_int = 0} },
-			{ MP_QSTR_func,	 MP_ARG_INT, {.u_int = 0} },
-		};
+	enum {
+		ARG_pin,
+		ARG_func,
+	};
+	static const mp_arg_t allowed_args[] = {
+		{ MP_QSTR_pin, 	MP_ARG_INT, {.u_int = 0} },
+		{ MP_QSTR_func,	 MP_ARG_INT, {.u_int = 0} },
+	};
+	//check arg
+	//....
 	mp_arg_val_t args[MP_ARRAY_SIZE(allowed_args)];
     mp_arg_parse_all(n_args-1, pos_args+1, kw_args, MP_ARRAY_SIZE(allowed_args), allowed_args, args);
 	uint16_t pin_num = args[ARG_pin].u_int;
 	fpioa_function_t func_num = args[ARG_func].u_int;
-	fpioa_set_function(pin_num,(fpioa_function_t)func_num);
-    return mp_const_none;
+	if(0 == fpioa_set_function(pin_num,(fpioa_function_t)func_num))
+    	return mp_const_none;
+	else
+	{
+		nlr_raise(mp_obj_new_exception_msg_varg(&mp_type_OSError, 
+												"Can not set fpioa"));
+	}
 }
-STATIC MP_DEFINE_CONST_FUN_OBJ_KW(machine_set_function_obj, 0,machine_set_function);
+STATIC MP_DEFINE_CONST_FUN_OBJ_KW(machine_set_function_obj,0,machine_set_function);
 
 
 STATIC mp_obj_t machine_help(size_t n_args, const mp_obj_t *pos_args, mp_map_t *kw_args) {
@@ -50,19 +56,19 @@ STATIC mp_obj_t machine_help(size_t n_args, const mp_obj_t *pos_args, mp_map_t *
 		ARG_func,
 	};
 	static const mp_arg_t allowed_args[] = {
-		{ MP_QSTR_func,	 MP_ARG_INT, {.u_int = 300} },
+		{ MP_QSTR_func,	 MP_ARG_INT, {.u_int = 204} },
 	};
 
 	mp_arg_val_t args[MP_ARRAY_SIZE(allowed_args)];
     mp_arg_parse_all(n_args-1, pos_args+1, kw_args, MP_ARRAY_SIZE(allowed_args), allowed_args, args);
 	char* des_space_str = NULL;
 	char* fun_space_str = NULL;
-	if(args[ARG_func].u_int != 300 && args[ARG_func].u_int > 203)
+	if (args[ARG_func].u_int > 204)
 	{
 		printf("No this funciton Description\n");
 		return mp_const_false;
 	}
-	if(args[ARG_func].u_int == 300)
+	if(args[ARG_func].u_int == 204)
 	{
 		
 		/******print all function describe******/
