@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<Error>
-  <Code>AccessDenied</Code>
-  <Message>Request has expired.</Message>
-  <RequestId>5BF3C823EE3C301F638D173E</RequestId>
-  <HostId>trans-complete.oss-cn-hangzhou.aliyuncs.com</HostId>
-  <Expires>2018-11-20T03:43:59.000Z</Expires>
-  <ServerTime>2018-11-20T08:38:59.000Z</ServerTime>
-</Error>

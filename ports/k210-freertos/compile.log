@@ -1,8 +1,0 @@
-Use make V=1 or set BUILD_VERBOSE in your environment to increase build verbosity.
-make micropython.bin
-make[1]: Entering directory '/home/xiaohui/workspace/dan/temp/MaixPy/ports/k210-freertos'
-Use make V=1 or set BUILD_VERBOSE in your environment to increase build verbosity.
-LINK micropython
-Makefile:281: recipe for target 'micropython' failed
-make[1]: Leaving directory '/home/xiaohui/workspace/dan/temp/MaixPy/ports/k210-freertos'
-Makefile:278: recipe for target 'all' failed
