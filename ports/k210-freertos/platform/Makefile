@@ -2,11 +2,7 @@
 # Makefile for maixpy
 # ports/k210-freetos/mpy_support/Makefile
 #
-.PHONY:all import_mk compile
-
-CROSS_COMPILE ?= 
-
-include ../../../py/mkenv.mk
+.PHONY:all import_mk
 
 OUTPUT_STATIC_LIB := mpy_support.a
 define mod_echo_func
@@ -17,7 +13,6 @@ define sub_make
 	$(call mod_echo_func,$(dir $(1)))
 	$(MAKE) -C $(basename $(patsubst %/,%,$(patsubst ./%,%,$(dir $(1))))) all
 endef
-
 MAKEFILE_LIST_LASTWORD = $(lastword $(MAKEFILE_LIST))
 MAKEFILE_PATH := $(abspath $(MAKEFILE_LIST_LASTWORD))
 MAKEFILE_DIR := $(dir $(MAKEFILE_PATH))
@@ -37,21 +32,17 @@ FILE_MK := $(foreach n,$(AllDirs) , $(wildcard $(n)/*.mk))
 FILE_MAKEFILE := $(foreach n,$(SUBDIRS) , $(wildcard $(n)/Makefile))
 
 define import_mk_func
-	$(include) $(1);
+include $(1)
 endef
 
 compile:
-	$(call mod_echo_func,"AllDirs "$(AllDirs)" ...")
-	$(foreach n,$(FILE_MAKEFILE),$(call sub_make,$(n)))
+	$(call mod_echo_func,"Compiling "$(FILE_MAKEFILE)" ...")
+	$(foreach n,$(FILE_MAKEFILE),$(call sub_make, $(n)))
 
 import_mk:
 	$(call mod_echo_func,"FILE_MK "$(FILE_MK)" ...")
 	$(foreach n,$(FILE_MK),$(call import_mk_func, $(n)))
 
-all:
-	make compile
-	make import_mk
-	# $(MAKE) -C test
+all:$(import_mk)$(compile)
 	$(call mod_echo_func,"cd "$(CURRENT_DIR)" ...")
-
 	
