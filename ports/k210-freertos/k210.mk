@@ -70,3 +70,8 @@ CXXFLAGS := \
 	-Wno-error=format= \
 	-Wno-error=pointer-sign
 
+do_mk:
+	touch k210_env
+	echo "export LD_LIBRARY_PATH=$""LD_LIBRARY_PATH:"$(dir $(CROSS_COMPILE)) > k210_env
+	source k210_env
+

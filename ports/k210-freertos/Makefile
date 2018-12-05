@@ -36,9 +36,6 @@ define update_sub_platform_mk
 		cat $(PLATFORM).mk>$(1); \
 	fi;
 endef
-define update_sub_all_mk
-	$(MAKE) -C $(1) update_mk CROSS_COMPILE=$(CROSS_COMPILE) PLATFORM=$(PLATFORM);
-endef
 
 GET_SUBDIRS1 := $(shell find . -maxdepth 1 -type d)
 GET_SUBDIRS2 := $(basename $(patsubst ./%,%,$(GET_SUBDIRS1)))
@@ -46,15 +43,11 @@ SUBDIRS := $(GET_SUBDIRS2)
 
 AllDirs := $(shell ls -R | grep '^\./.*:$$' | awk '{gsub(":","");print}') .
 PLATFORM_MK := $(foreach n,$(AllDirs) , $(wildcard $(n)/$(PLATFORM).mk))
-ALL_FILE_MAKEFILE := $(foreach n,$(AllDirs) , $(wildcard $(n)/Makefile))
-
 FILE_MAKEFILE := $(foreach n,$(SUBDIRS) , $(wildcard $(n)/Makefile))
-
-
 
 FILE_MK := $(foreach n,$(SUBDIRS) , $(wildcard $(n)/mk))
 
-all: update_all_mk do_mk update_all_platform_mk update_mk compile
+all: do_mk update_all_platform_mk update_mk compile
 	
 
 compile:
@@ -72,8 +65,6 @@ update_all_platform_mk:
 	then \
 	     $(foreach n,$(PLATFORM_MK),$(call update_sub_platform_mk, $(n))) \
 	fi;
-update_all_mk:
-	$(foreach n,$(ALL_FILE_MAKEFILE),$(call update_sub_all_mk, $(dir $(n))))
 	
 clean:
 	rm -f mk

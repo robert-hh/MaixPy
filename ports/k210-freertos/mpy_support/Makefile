@@ -44,7 +44,6 @@ INC :=
 ###############################################################################
 # IMPORT MK FILE
 # sinclude mk MICROPYTHON NEED OTHER MK,SO I INCLUDE THE MK WHERE IS IN ROOT DIR
-make 
 sinclude ../mk
 ###############################################################################
 # IMPORT PLATFORM OPTIONS
