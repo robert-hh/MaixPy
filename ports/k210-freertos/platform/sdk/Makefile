@@ -44,15 +44,17 @@ define mod_echo_func
 	@echo "\033[;34m"$(1)"\033[;34m";
 endef
 
+all: build_env compile update_mk
+
 build_env:
-	ifeq ($(SDK_DIR_NAME), $(wildcard $(SDK_DIR_NAME)))
-		git clone -b $(SDK_GIT_BRANCH) $(SDK_GIT_ADDR)
-	endif
-all:
-	$(build_env)
+	if [ ! -d $(SDK_DIR_NAME) ] ; \
+	then \
+	     git clone -b $(SDK_GIT_BRANCH) $(SDK_GIT_ADDR);\
+	fi;
+
+compile:
 	-mkdir build
 	cd build && cmake ../$(SDK_DIR_NAME)/ -DPROJ=hello_world -DTOOLCHAIN=$(dir $(CROSS_COMPILE)) && make
-	make update_mk
 
 update_mk:
 	$(call mod_echo_func,"update mk file"" ...")

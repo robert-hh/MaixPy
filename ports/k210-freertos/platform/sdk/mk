@@ -1,0 +1,22 @@
+INC += /home/xiaohui/workspace/dan/temp/k210-freertos-mpy-makefile/ports/k210-freertos/platform/sdk/
+ INC += /home/xiaohui/workspace/dan/temp/k210-freertos-mpy-makefile/ports/k210-freertos/platform/sdk/include/
+ INC += /home/xiaohui/workspace/dan/temp/k210-freertos-mpy-makefile/ports/k210-freertos/platform/sdk/kendryte-freertos-sdk/lib/arch/include/
+ INC += /home/xiaohui/workspace/dan/temp/k210-freertos-mpy-makefile/ports/k210-freertos/platform/sdk/kendryte-freertos-sdk/lib/bsp/include/
+ INC += /home/xiaohui/workspace/dan/temp/k210-freertos-mpy-makefile/ports/k210-freertos/platform/sdk/kendryte-freertos-sdk/lib/drivers/include/
+ INC += /home/xiaohui/workspace/dan/temp/k210-freertos-mpy-makefile/ports/k210-freertos/platform/sdk/kendryte-freertos-sdk/lib/freertos/conf/
+ INC += /home/xiaohui/workspace/dan/temp/k210-freertos-mpy-makefile/ports/k210-freertos/platform/sdk/kendryte-freertos-sdk/lib/freertos/include/
+ INC += /home/xiaohui/workspace/dan/temp/k210-freertos-mpy-makefile/ports/k210-freertos/platform/sdk/kendryte-freertos-sdk/lib/freertos/kernel/
+ INC += /home/xiaohui/workspace/dan/temp/k210-freertos-mpy-makefile/ports/k210-freertos/platform/sdk/kendryte-freertos-sdk/lib/freertos/portable/
+ INC += /home/xiaohui/workspace/dan/temp/k210-freertos-mpy-makefile/ports/k210-freertos/platform/sdk/kendryte-freertos-sdk/lib/hal/include/
+ INC += /home/xiaohui/workspace/dan/temp/k210-freertos-mpy-makefile/ports/k210-freertos/platform/sdk/kendryte-freertos-sdk/lib/posix/include/
+ INC += /home/xiaohui/workspace/dan/temp/k210-freertos-mpy-makefile/ports/k210-freertos/platform/sdk/kendryte-freertos-sdk/lib/utils/include/
+ INC += /home/xiaohui/workspace/dan/temp/k210-freertos-mpy-makefile/ports/k210-freertos/platform/sdk/kendryte-freertos-sdk/third_party/fatfs/source/
+ INC += /home/xiaohui/workspace/dan/temp/k210-freertos-mpy-makefile/ports/k210-freertos/platform/sdk/kendryte-freertos-sdk/third_party/
+ liba-bsp := /home/xiaohui/workspace/dan/temp/k210-freertos-mpy-makefile/ports/k210-freertos/platform/sdk/build/SDK/bsp/libbsp.a
+ liba-hal := /home/xiaohui/workspace/dan/temp/k210-freertos-mpy-makefile/ports/k210-freertos/platform/sdk/build/SDK/libhal.a
+ liba-posix := /home/xiaohui/workspace/dan/temp/k210-freertos-mpy-makefile/ports/k210-freertos/platform/sdk/build/SDK/posix/libposix.a
+ liba-fatfs := /home/xiaohui/workspace/dan/temp/k210-freertos-mpy-makefile/ports/k210-freertos/platform/sdk/build/third_party/fatfs/libfatfs.a
+ liba-drivers := /home/xiaohui/workspace/dan/temp/k210-freertos-mpy-makefile/ports/k210-freertos/platform/sdk/build/SDK/drivers/libdrivers.a
+ liba-libfreertos := /home/xiaohui/workspace/dan/temp/k210-freertos-mpy-makefile/ports/k210-freertos/platform/sdk/build/SDK/libfreertos.a
+ output-file := $(liba-bsp) $(liba-hal) $(liba-posix) $(liba-fatfs) $(liba-drivers) $(liba-libfreertos)
+

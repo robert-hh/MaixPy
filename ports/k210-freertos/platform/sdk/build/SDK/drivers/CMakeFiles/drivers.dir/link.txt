@@ -1,0 +1,2 @@
+/home/xiaohui/workspace/dan/kendryte-toolchain/bin//riscv64-unknown-elf-ar qc libdrivers.a  CMakeFiles/drivers.dir/src/misc/ws2812b/ws2812b.cpp.obj CMakeFiles/drivers.dir/src/storage/sdcard.cpp.obj
+/home/xiaohui/workspace/dan/kendryte-toolchain/bin/riscv64-unknown-elf-ranlib libdrivers.a

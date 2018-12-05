@@ -2,14 +2,14 @@
 # Makefile for maixpy
 # ports/k210-freetos/Makefile
 #
-.PHONY: all clean compile do_mk
+.PHONY: all clean compile do_mk update_all_platform_mk
 CUR_DIR := $(shell pwd)/
 ###################################
 # USER OPTION
 LIB_NAME ?= maixpy
 CROSS_COMPILE ?= 
-MK_VALUE :="INC := "".""\r\n"
-MK_VALUE +="INC += ""include/""\r\n"
+MK_VALUE :="INC := "".""\n"
+MK_VALUE +="INC += ""include/""\n"
 OUTPUT_STATIC_LIB := $(LIB_NAME).a
 ####################################
 # Optional options
@@ -21,11 +21,23 @@ sinclude $(PLATFORM).mk
 define sub_clean
 	$(MAKE) -C $(1) clean CROSS_COMPILE=$(CROSS_COMPILE) PLATFORM=$(PLATFORM);
 endef
+
 define sub_make
 	$(MAKE) -C $(1) all CROSS_COMPILE=$(CROSS_COMPILE) PLATFORM=$(PLATFORM);
 endef
+
 define mod_echo_func
 	@echo "\033[;31m"$(1)"\033[;31m";
+endef
+
+define update_sub_platform_mk
+	if [ "$(dir $(1))" != "./" ] ; \
+	then \
+		cat $(PLATFORM).mk>$(1); \
+	fi;
+endef
+define update_sub_all_mk
+	$(MAKE) -C $(1) update_mk CROSS_COMPILE=$(CROSS_COMPILE) PLATFORM=$(PLATFORM);
 endef
 
 GET_SUBDIRS1 := $(shell find . -maxdepth 1 -type d)
@@ -34,40 +46,38 @@ SUBDIRS := $(GET_SUBDIRS2)
 
 AllDirs := $(shell ls -R | grep '^\./.*:$$' | awk '{gsub(":","");print}') .
 PLATFORM_MK := $(foreach n,$(AllDirs) , $(wildcard $(n)/$(PLATFORM).mk))
+ALL_FILE_MAKEFILE := $(foreach n,$(AllDirs) , $(wildcard $(n)/Makefile))
 
-define update_sub_platform_mk
-	if [ -f $(dir $(1)),"./" ] ; \
-	then \
-		cat $(PLATFORM).mk>$(1);\
-	fi;
-endef
+FILE_MAKEFILE := $(foreach n,$(SUBDIRS) , $(wildcard $(n)/Makefile))
+
+
 
 FILE_MK := $(foreach n,$(SUBDIRS) , $(wildcard $(n)/mk))
 
-all:$(do_mk)
-# $(call mod_echo_func,"AllDirs"$(AllDirs)" ...")
-	@make update_all_platform_mk
-	make update_mk
-	make compile
-	$(call mod_echo_func,"compile "$(SUBDIRS))
+all: update_all_mk do_mk update_all_platform_mk update_mk compile
+	
 
 compile:
 	$(call mod_echo_func,"Compiling "$(SUBDIRS)" ...")
-	$(foreach n,$(SUBDIRS),$(call sub_make, $(n)))
+	$(foreach n,$(FILE_MAKEFILE),$(call sub_make, $(dir $(n))))
+	$(call mod_echo_func,"compile "$(SUBDIRS)" .")
 
 update_mk:
 	$(call mod_echo_func,"update mk file"" ...")
-	$(shell echo $(MK_VALUE)$(foreach n,$(FILE_MK),"sinclude "$(n)"\r\n") > mk)
+	$(shell echo -e $(MK_VALUE)$(foreach n,$(FILE_MK),"sinclude "$(CUR_DIR_ADDR)$(n)"\n") > mk)
 
 update_all_platform_mk:
+	$(call mod_echo_func,"PLATFORM_MK"$(PLATFORM_MK)" ...")
 	if [ -f $(PLATFORM).mk ] ; \
 	then \
 	     $(foreach n,$(PLATFORM_MK),$(call update_sub_platform_mk, $(n))) \
 	fi;
-
+update_all_mk:
+	$(foreach n,$(ALL_FILE_MAKEFILE),$(call update_sub_all_mk, $(dir $(n))))
+	
 clean:
 	rm -f mk
 	$(call mod_echo_func,"Cleaning "$(SUBDIRS)" ...")
-	$(foreach n,$(SUBDIRS),$(call sub_clean, $(n)))
+	$(foreach n,$(FILE_MAKEFILE),$(call sub_clean, $(n)))
 
 

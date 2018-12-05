@@ -1,0 +1,2 @@
+/home/xiaohui/workspace/dan/kendryte-toolchain/bin//riscv64-unknown-elf-ar qc libhal.a  CMakeFiles/hal.dir/clint.c.obj CMakeFiles/hal.dir/fpioa.c.obj CMakeFiles/hal.dir/sysctl.c.obj CMakeFiles/hal.dir/uarths.c.obj CMakeFiles/hal.dir/utility.c.obj
+/home/xiaohui/workspace/dan/kendryte-toolchain/bin/riscv64-unknown-elf-ranlib libhal.a

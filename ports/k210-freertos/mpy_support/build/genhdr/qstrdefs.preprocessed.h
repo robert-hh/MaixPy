@@ -1,0 +1,5 @@
+# 1 "<stdin>"
+# 1 "/home/xiaohui/workspace/dan/temp/k210-freertos-mpy-makefile/ports/k210-freertos/mpy_support//"
+# 1 "<built-in>"
+# 1 "<command-line>"
+# 1 "<stdin>"

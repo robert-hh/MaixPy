@@ -3,13 +3,13 @@
 # ports/k210-freetos/mpy_support/Makefile
 #
 .PHONY:all update_mk compile
-CUR_DIR := $(shell pwd)/
+CUR_DIR_ADDR := $(shell pwd)/
 ###################################
 # USER OPTION
 LIB_NAME ?= platform
 CROSS_COMPILE ?= 
-MK_VALUE :="INC := "$(CUR_DIR)"\r\n"
-MK_VALUE +="INC += "$(CUR_DIR)"include/""\r\n"
+MK_VALUE :="INC := "$(CUR_DIR_ADDR)"\n"
+MK_VALUE +="INC += "$(CUR_DIR_ADDR)"include/""\n"
 OUTPUT_STATIC_LIB := $(LIB_NAME).a
 ####################################
 # Optional options
@@ -43,25 +43,22 @@ SRC_C := $(wildcard *.c))
 SRC_CPP := $(wildcard *.cpp)
 
 # AllDirs := $(shell ls -R | grep '^\./.*:$$' | awk '{gsub(":","");print}') .
-FILE_MK := $(foreach n,$(SUBDIRS) , $(wildcard $(n)/MK))
+FILE_MK := $(foreach n,$(SUBDIRS) , $(wildcard $(n)/mk))
 FILE_MAKEFILE := $(foreach n,$(SUBDIRS) , $(wildcard $(n)/Makefile))
 
-all:
+all: update_mk compile
 	$(call mod_echo_func,"CUR_DIR "$(CUR_DIR)" ...")
-	make update_mk
-	make compile
 
 compile:
 	$(call mod_echo_func,"AllDirs "$(AllDirs)" ...")
 	$(foreach n,$(FILE_MAKEFILE),$(call sub_make,$(n)))
 
 update_mk:
-	$(call mod_echo_func,"update mk file"" ...")
-	$(shell echo $(MK_VALUE)$(foreach n,$(FILE_MK),"sinclude "$(n)"\r\n") > mk)
-
+	$(call mod_echo_func,"update mk file"$(FILE_MK)" ...")
+	$(shell echo $(MK_VALUE)$(foreach n,$(FILE_MK),"sinclude "$(CUR_DIR_ADDR)$(n)"\n") > mk)
 
 clean:
 	rm -f mk
 	$(call mod_echo_func,"Cleaning "$(SUBDIRS)" ...")
-	$(foreach n,$(SUBDIRS),$(call sub_clean, $(n)))
+	$(foreach n,$(FILE_MAKEFILE),$(call sub_clean, $(n)))
 
