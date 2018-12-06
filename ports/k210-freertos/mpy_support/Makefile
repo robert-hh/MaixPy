@@ -34,6 +34,7 @@ MPY_EXT_SRC_C := \
 		lib/netutils/netutils.c \
 		lib/timeutils/timeutils.c \
 		lib/utils/sys_stdio_mphal.c
+
 ###############################################################################
 # Optional options
 PLATFORM ?=
@@ -87,11 +88,17 @@ OBJ += $(PY_O) $(C_OBJ) #USE MPY COMPILE SRICPT COMPILE SRC FILE
 CXX_OBJ := $(addprefix $(BUILD), $(SRC_CPP:.cpp=.o))
 INCLUDE_FLAGS := $(addprefix -I, $(INC))
 CFLAGS += $(INCLUDE_FLAGS)
+
+# List of sources for qstr extraction
+SRC_QSTR += $(SRC_C)
+# Append any auto-generated sources that are needed by sources listed in SRC_QSTR
+SRC_QSTR_AUTO_DEPS +=
+
 $(CXX_OBJ):%.o:%.cpp
 	mkdir -p $(dir $(OUTPUT_DIR)) 
 	$(Q)$(CXX)  -o $(OUTPUT_DIR)/$@ -c $< -I$(INC) $(CXXFLAGS) -lstdc++
 
-compile: $(OBJ) $(CXX_OBJ)
+compile: $(BUILD)/_frozen_mpy.c $(OBJ) $(CXX_OBJ)
 
 $(OUTPUT_STATIC_LIB):
 	$(AR) rcs -o $@ $(CXX_OBJ) $(OBJ)
@@ -106,7 +113,7 @@ update_mk:
 # $(call mod_echo_func,"INC "$(INC)" ...")
 	$(call mod_echo_func,"CFLAGS "$(CFLAGS)" ...")
 	$(call mod_echo_func,"update mk file"" ...")
-	$(shell echo -e $(MK_VALUE)$(foreach n,$(FILE_MK),"sinclude "$(CUR_DIR_ADDR)$(n)"\n") > mk)
+	$(shell echo -e $(MK_VALUE)$(foreach n,$(FILE_MK),"include "$(CUR_DIR_ADDR)$(n)"\n") > mk)
 	
 clean:
 	rm -f mk
