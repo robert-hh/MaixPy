@@ -1,4 +1,0 @@
-INC := /home/xiaohui/workspace/dan/temp/k210-freertos-mpy-makefile/ports/k210-freertos/platform/
- INC += /home/xiaohui/workspace/dan/temp/k210-freertos-mpy-makefile/ports/k210-freertos/platform/include/
-sinclude /home/xiaohui/workspace/dan/temp/k210-freertos-mpy-makefile/ports/k210-freertos/platform/sdk/mk
-

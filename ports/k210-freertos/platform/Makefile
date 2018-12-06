@@ -4,17 +4,23 @@
 #
 .PHONY:all update_mk compile
 CUR_DIR_ADDR := $(shell pwd)/
-###################################
+###############################################################################
 # USER OPTION
 LIB_NAME ?= platform
 CROSS_COMPILE ?= 
-MK_VALUE :="INC := "$(CUR_DIR_ADDR)"\n"
+MK_VALUE :="INC += "$(CUR_DIR_ADDR)"\n"
 MK_VALUE +="INC += "$(CUR_DIR_ADDR)"include/""\n"
 OUTPUT_STATIC_LIB := $(LIB_NAME).a
-####################################
+###############################################################################
 # Optional options
 PLATFORM ?=
-####################################
+###############################################################################
+# COMPILE OPTIONS
+CFLAGS :=
+LDFLAGS :=
+CXXFLAGS :=
+INC :=
+###############################################################################
 define mod_echo_func
 	@echo "\033[;34m"$(1)"\033[;34m";
 endef
@@ -60,5 +66,5 @@ update_mk:
 clean:
 	rm -f mk
 	$(call mod_echo_func,"Cleaning "$(SUBDIRS)" ...")
-	$(foreach n,$(FILE_MAKEFILE),$(call sub_clean, $(n)))
+	$(foreach n,$(FILE_MAKEFILE),$(call sub_clean, $(dir $(n))))
 

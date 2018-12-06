@@ -3,18 +3,23 @@
 # ports/k210-freetos/Makefile
 #
 .PHONY: all clean compile do_mk update_all_platform_mk
-CUR_DIR := $(shell pwd)/
-###################################
+CUR_DIR_ADDR := $(shell pwd)/
+###############################################################################
 # USER OPTION
 LIB_NAME ?= maixpy
 CROSS_COMPILE ?= 
-MK_VALUE :="INC := "".""\n"
+MK_VALUE :="INC += "".""\n"
 MK_VALUE +="INC += ""include/""\n"
-OUTPUT_STATIC_LIB := $(LIB_NAME).a
-####################################
+###############################################################################
 # Optional options
 PLATFORM ?=
-####################################
+###############################################################################
+# COMPILE OPTIONS
+CFLAGS :=
+LDFLAGS :=
+CXXFLAGS :=
+INC :=
+###############################################################################
 
 sinclude $(PLATFORM).mk
 
@@ -23,7 +28,10 @@ define sub_clean
 endef
 
 define sub_make
-	$(MAKE) -C $(1) all CROSS_COMPILE=$(CROSS_COMPILE) PLATFORM=$(PLATFORM);
+	if [ "$(1)" != " mpy_support/" ] ; \
+	then \
+		$(MAKE) -C $(1) all CROSS_COMPILE=$(CROSS_COMPILE) PLATFORM=$(PLATFORM); \
+	fi;
 endef
 
 define mod_echo_func
@@ -54,10 +62,11 @@ compile:
 	$(call mod_echo_func,"Compiling "$(SUBDIRS)" ...")
 	$(foreach n,$(FILE_MAKEFILE),$(call sub_make, $(dir $(n))))
 	$(call mod_echo_func,"compile "$(SUBDIRS)" .")
+	$(MAKE) -C mpy_support all CROSS_COMPILE=$(CROSS_COMPILE) PLATFORM=$(PLATFORM)
 
 update_mk:
 	$(call mod_echo_func,"update mk file"" ...")
-	$(shell echo -e $(MK_VALUE)$(foreach n,$(FILE_MK),"sinclude "$(CUR_DIR_ADDR)$(n)"\n") > mk)
+	$(shell echo -e $(MK_VALUE)$(foreach n,$(FILE_MK),"include "$(CUR_DIR_ADDR)$(n)"\n") > mk)
 
 update_all_platform_mk:
 	$(call mod_echo_func,"PLATFORM_MK"$(PLATFORM_MK)" ...")
@@ -67,8 +76,8 @@ update_all_platform_mk:
 	fi;
 	
 clean:
-	rm -f mk
 	$(call mod_echo_func,"Cleaning "$(SUBDIRS)" ...")
-	$(foreach n,$(FILE_MAKEFILE),$(call sub_clean, $(n)))
+	$(foreach n,$(FILE_MAKEFILE),$(call sub_clean, $(dir $(n))))
+	rm -f mk
 
 

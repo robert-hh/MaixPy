@@ -36,7 +36,6 @@ CFLAGS = \
 	-Wno-error=pointer-sign
 
 CXXFLAGS := \
-	$(INC)\
 	-DCONFIG_LOG_COLORS \
 	-DCONFIG_LOG_ENABLE \
 	-DCONFIG_LOG_LEVEL=LOG_INFO \
@@ -71,6 +70,11 @@ CXXFLAGS := \
 	-Wno-error=pointer-sign
 
 do_mk:
-	touch k210_env
-	echo "export LD_LIBRARY_PATH=$""LD_LIBRARY_PATH:"$(dir $(CROSS_COMPILE)) > k210_env
-	source k210_env
+	$(shell touch ./k210_env)
+	$(shell echo "export LD_LIBRARY_PATH=$$""LD_LIBRARY_PATH:"$(dir $(CROSS_COMPILE)) > ./k210_env)
+	$(call mod_echo_func,"source k210_env"" ...")
+	$(call mod_echo_func,"k210_env "$(shell cat ./k210_env)" ...")
+	$(shell source ./k210_env)
+	source ./k210_env
+	
+
