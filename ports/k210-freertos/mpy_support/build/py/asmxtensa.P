@@ -30,7 +30,7 @@ build/py/asmxtensa.o: ../../../py/asmxtensa.c \
  /home/xiaohui/workspace/dan/kendryte-toolchain/riscv64-unknown-elf/include/sys/stdio.h \
  /home/xiaohui/workspace/dan/kendryte-toolchain/riscv64-unknown-elf/include/assert.h \
  /home/xiaohui/workspace/dan/temp/k210-freertos-mpy-makefile/ports/k210-freertos/mpy_support/../../../py/mpconfig.h \
- /home/xiaohui/workspace/dan/temp/k210-freertos-mpy-makefile/ports/k210-freertos/mpy_support/mpconfigport.h \
+ mpconfigport.h \
  /home/xiaohui/workspace/dan/kendryte-toolchain/lib/gcc/riscv64-unknown-elf/8.2.0/include/stdint.h \
  /home/xiaohui/workspace/dan/kendryte-toolchain/riscv64-unknown-elf/include/stdint.h \
  /home/xiaohui/workspace/dan/kendryte-toolchain/riscv64-unknown-elf/include/sys/_intsup.h \
@@ -68,7 +68,7 @@ build/py/asmxtensa.o: ../../../py/asmxtensa.c \
  /home/xiaohui/workspace/dan/kendryte-toolchain/riscv64-unknown-elf/include/sys/stdio.h :
  /home/xiaohui/workspace/dan/kendryte-toolchain/riscv64-unknown-elf/include/assert.h :
  /home/xiaohui/workspace/dan/temp/k210-freertos-mpy-makefile/ports/k210-freertos/mpy_support/../../../py/mpconfig.h :
- /home/xiaohui/workspace/dan/temp/k210-freertos-mpy-makefile/ports/k210-freertos/mpy_support/mpconfigport.h :
+ mpconfigport.h :
  /home/xiaohui/workspace/dan/kendryte-toolchain/lib/gcc/riscv64-unknown-elf/8.2.0/include/stdint.h :
  /home/xiaohui/workspace/dan/kendryte-toolchain/riscv64-unknown-elf/include/stdint.h :
  /home/xiaohui/workspace/dan/kendryte-toolchain/riscv64-unknown-elf/include/sys/_intsup.h :

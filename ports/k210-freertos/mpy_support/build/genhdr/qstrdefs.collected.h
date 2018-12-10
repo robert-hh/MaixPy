@@ -154,6 +154,12 @@ Q(FLOAT32)
 
 Q(FLOAT64)
 
+Q(FileIO)
+
+Q(FileIO)
+
+Q(FileIO)
+
 Q(GeneratorExit)
 
 Q(GeneratorExit)
@@ -256,6 +262,8 @@ Q(SystemExit)
 
 Q(SystemExit)
 
+Q(TextIOWrapper)
+
 Q(TimeoutError)
 
 Q(TypeError)
@@ -316,6 +324,8 @@ Q(__contains__)
 
 Q(__contains__)
 
+Q(__del__)
+
 Q(__delete__)
 
 Q(__delete__)
@@ -336,9 +346,13 @@ Q(__enter__)
 
 Q(__enter__)
 
+Q(__enter__)
+
 Q(__eq__)
 
 Q(__eq__)
+
+Q(__exit__)
 
 Q(__exit__)
 
@@ -560,6 +574,8 @@ Q(_lt_module_gt_)
 
 Q(_lt_setcomp_gt_)
 
+Q(_lt_stdin_gt_)
+
 Q(_lt_string_gt_)
 
 Q(_space_)
@@ -642,6 +658,10 @@ Q(bool)
 
 Q(bound_method)
 
+Q(buffer)
+
+Q(buffering)
+
 Q(builtins)
 
 Q(builtins)
@@ -687,6 +707,10 @@ Q(clear)
 Q(clear)
 
 Q(clear)
+
+Q(close)
+
+Q(close)
 
 Q(close)
 
@@ -786,6 +810,10 @@ Q(enable)
 
 Q(encode)
 
+Q(encoding)
+
+Q(encoding)
+
 Q(end)
 
 Q(endswith)
@@ -830,6 +858,10 @@ Q(fabs)
 
 Q(file)
 
+Q(file)
+
+Q(file)
+
 Q(filter)
 
 Q(filter)
@@ -843,6 +875,8 @@ Q(float)
 Q(float)
 
 Q(floor)
+
+Q(flush)
 
 Q(flush)
 
@@ -1122,6 +1156,10 @@ Q(micropython)
 
 Q(micropython)
 
+Q(mode)
+
+Q(mode)
+
 Q(modf)
 
 Q(module)
@@ -1204,6 +1242,10 @@ Q(push)
 
 Q(qstr_info)
 
+Q(r)
+
+Q(r)
+
 Q(radians)
 
 Q(randint)
@@ -1230,6 +1272,12 @@ Q(read)
 
 Q(read)
 
+Q(read)
+
+Q(read)
+
+Q(readinto)
+
 Q(readinto)
 
 Q(readinto)
@@ -1245,6 +1293,10 @@ Q(readline)
 Q(readline)
 
 Q(readline)
+
+Q(readline)
+
+Q(readlines)
 
 Q(release)
 
@@ -1295,6 +1347,8 @@ Q(search)
 Q(search)
 
 Q(seed)
+
+Q(seek)
 
 Q(seek)
 
@@ -1549,6 +1603,10 @@ Q(websocket)
 Q(websocket)
 
 Q(websocket)
+
+Q(write)
+
+Q(write)
 
 Q(write)
 

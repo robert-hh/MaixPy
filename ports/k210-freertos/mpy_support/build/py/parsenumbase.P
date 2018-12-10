@@ -1,6 +1,6 @@
 build/py/parsenumbase.o: ../../../py/parsenumbase.c \
  /home/xiaohui/workspace/dan/temp/k210-freertos-mpy-makefile/ports/k210-freertos/mpy_support/../../../py/mpconfig.h \
- /home/xiaohui/workspace/dan/temp/k210-freertos-mpy-makefile/ports/k210-freertos/mpy_support/mpconfigport.h \
+ mpconfigport.h \
  /home/xiaohui/workspace/dan/kendryte-toolchain/lib/gcc/riscv64-unknown-elf/8.2.0/include/stdint.h \
  /home/xiaohui/workspace/dan/kendryte-toolchain/riscv64-unknown-elf/include/stdint.h \
  /home/xiaohui/workspace/dan/kendryte-toolchain/riscv64-unknown-elf/include/machine/_default_types.h \
@@ -24,7 +24,7 @@ build/py/parsenumbase.o: ../../../py/parsenumbase.c \
  /home/xiaohui/workspace/dan/temp/k210-freertos-mpy-makefile/ports/k210-freertos/mpy_support/../../../py/parsenumbase.h
 ../../../py/parsenumbase.c :
  /home/xiaohui/workspace/dan/temp/k210-freertos-mpy-makefile/ports/k210-freertos/mpy_support/../../../py/mpconfig.h :
- /home/xiaohui/workspace/dan/temp/k210-freertos-mpy-makefile/ports/k210-freertos/mpy_support/mpconfigport.h :
+ mpconfigport.h :
  /home/xiaohui/workspace/dan/kendryte-toolchain/lib/gcc/riscv64-unknown-elf/8.2.0/include/stdint.h :
  /home/xiaohui/workspace/dan/kendryte-toolchain/riscv64-unknown-elf/include/stdint.h :
  /home/xiaohui/workspace/dan/kendryte-toolchain/riscv64-unknown-elf/include/machine/_default_types.h :

@@ -39,10 +39,10 @@ build/py/emitbc.o: ../../../py/emitbc.c \
  /home/xiaohui/workspace/dan/kendryte-toolchain/riscv64-unknown-elf/include/assert.h \
  /home/xiaohui/workspace/dan/temp/k210-freertos-mpy-makefile/ports/k210-freertos/mpy_support/../../../py/mpstate.h \
  /home/xiaohui/workspace/dan/temp/k210-freertos-mpy-makefile/ports/k210-freertos/mpy_support/../../../py/mpconfig.h \
- /home/xiaohui/workspace/dan/temp/k210-freertos-mpy-makefile/ports/k210-freertos/mpy_support/mpconfigport.h \
+ mpconfigport.h \
  /home/xiaohui/workspace/dan/kendryte-toolchain/riscv64-unknown-elf/include/alloca.h \
  /home/xiaohui/workspace/dan/temp/k210-freertos-mpy-makefile/ports/k210-freertos/mpy_support/../../../py/mpthread.h \
- /home/xiaohui/workspace/dan/temp/k210-freertos-mpy-makefile/ports/k210-freertos/mpy_support/mpthreadport.h \
+ mpthreadport.h \
  /home/xiaohui/workspace/dan/temp/k210-freertos-mpy-makefile/ports/k210-freertos/platform/sdk/kendryte-freertos-sdk/lib/freertos/include/FreeRTOS.h \
  /home/xiaohui/workspace/dan/temp/k210-freertos-mpy-makefile/ports/k210-freertos/platform/sdk/kendryte-freertos-sdk/lib/freertos/conf/FreeRTOSConfig.h \
  /home/xiaohui/workspace/dan/temp/k210-freertos-mpy-makefile/ports/k210-freertos/platform/sdk/kendryte-freertos-sdk/lib/freertos/include/projdefs.h \
@@ -120,10 +120,10 @@ build/py/emitbc.o: ../../../py/emitbc.c \
  /home/xiaohui/workspace/dan/kendryte-toolchain/riscv64-unknown-elf/include/assert.h :
  /home/xiaohui/workspace/dan/temp/k210-freertos-mpy-makefile/ports/k210-freertos/mpy_support/../../../py/mpstate.h :
  /home/xiaohui/workspace/dan/temp/k210-freertos-mpy-makefile/ports/k210-freertos/mpy_support/../../../py/mpconfig.h :
- /home/xiaohui/workspace/dan/temp/k210-freertos-mpy-makefile/ports/k210-freertos/mpy_support/mpconfigport.h :
+ mpconfigport.h :
  /home/xiaohui/workspace/dan/kendryte-toolchain/riscv64-unknown-elf/include/alloca.h :
  /home/xiaohui/workspace/dan/temp/k210-freertos-mpy-makefile/ports/k210-freertos/mpy_support/../../../py/mpthread.h :
- /home/xiaohui/workspace/dan/temp/k210-freertos-mpy-makefile/ports/k210-freertos/mpy_support/mpthreadport.h :
+ mpthreadport.h :
  /home/xiaohui/workspace/dan/temp/k210-freertos-mpy-makefile/ports/k210-freertos/platform/sdk/kendryte-freertos-sdk/lib/freertos/include/FreeRTOS.h :
  /home/xiaohui/workspace/dan/temp/k210-freertos-mpy-makefile/ports/k210-freertos/platform/sdk/kendryte-freertos-sdk/lib/freertos/conf/FreeRTOSConfig.h :
  /home/xiaohui/workspace/dan/temp/k210-freertos-mpy-makefile/ports/k210-freertos/platform/sdk/kendryte-freertos-sdk/lib/freertos/include/projdefs.h :

@@ -6,7 +6,7 @@
 # 27 "<stdin>"
 # 1 "/home/xiaohui/workspace/dan/temp/k210-freertos-mpy-makefile/ports/k210-freertos/mpy_support/../../../py/mpconfig.h" 1
 # 45 "/home/xiaohui/workspace/dan/temp/k210-freertos-mpy-makefile/ports/k210-freertos/mpy_support/../../../py/mpconfig.h"
-# 1 "/home/xiaohui/workspace/dan/temp/k210-freertos-mpy-makefile/ports/k210-freertos/mpy_support/mpconfigport.h" 1
+# 1 "./mpconfigport.h" 1
 # 1 "/home/xiaohui/workspace/dan/kendryte-toolchain/lib/gcc/riscv64-unknown-elf/8.2.0/include/stdint.h" 1 3 4
 # 9 "/home/xiaohui/workspace/dan/kendryte-toolchain/lib/gcc/riscv64-unknown-elf/8.2.0/include/stdint.h" 3 4
 # 1 "/home/xiaohui/workspace/dan/kendryte-toolchain/riscv64-unknown-elf/include/stdint.h" 1 3 4
@@ -202,23 +202,23 @@ typedef __uint_least64_t uint_least64_t;
   typedef long int int_fast64_t;
   typedef long unsigned int uint_fast64_t;
 # 10 "/home/xiaohui/workspace/dan/kendryte-toolchain/lib/gcc/riscv64-unknown-elf/8.2.0/include/stdint.h" 2 3 4
-# 2 "/home/xiaohui/workspace/dan/temp/k210-freertos-mpy-makefile/ports/k210-freertos/mpy_support/mpconfigport.h" 2
+# 2 "./mpconfigport.h" 2
 # 1 "/home/xiaohui/workspace/dan/kendryte-toolchain/lib/gcc/riscv64-unknown-elf/8.2.0/include/stdbool.h" 1 3 4
-# 3 "/home/xiaohui/workspace/dan/temp/k210-freertos-mpy-makefile/ports/k210-freertos/mpy_support/mpconfigport.h" 2
-# 65 "/home/xiaohui/workspace/dan/temp/k210-freertos-mpy-makefile/ports/k210-freertos/mpy_support/mpconfigport.h"
+# 3 "./mpconfigport.h" 2
+# 65 "./mpconfigport.h"
 
-# 65 "/home/xiaohui/workspace/dan/temp/k210-freertos-mpy-makefile/ports/k210-freertos/mpy_support/mpconfigport.h"
+# 65 "./mpconfigport.h"
 extern const struct _mp_print_t mp_debug_print;
 extern const struct _mp_print_t mp_debug_print;
-# 214 "/home/xiaohui/workspace/dan/temp/k210-freertos-mpy-makefile/ports/k210-freertos/mpy_support/mpconfigport.h"
+# 214 "./mpconfigport.h"
 typedef int64_t mp_int_t;
 typedef uint64_t mp_uint_t;
 
 typedef long mp_off_t;
-# 226 "/home/xiaohui/workspace/dan/temp/k210-freertos-mpy-makefile/ports/k210-freertos/mpy_support/mpconfigport.h"
+# 226 "./mpconfigport.h"
 extern const struct _mp_obj_module_t machine_module;
 extern const struct _mp_obj_module_t uos_module;
-# 250 "/home/xiaohui/workspace/dan/temp/k210-freertos-mpy-makefile/ports/k210-freertos/mpy_support/mpconfigport.h"
+# 250 "./mpconfigport.h"
 # 1 "/home/xiaohui/workspace/dan/kendryte-toolchain/riscv64-unknown-elf/include/alloca.h" 1 3
 # 10 "/home/xiaohui/workspace/dan/kendryte-toolchain/riscv64-unknown-elf/include/alloca.h" 3
 # 1 "/home/xiaohui/workspace/dan/kendryte-toolchain/riscv64-unknown-elf/include/_ansi.h" 1 3
@@ -635,7 +635,7 @@ extern struct _reent *const _global_impure_ptr ;
 
 void _reclaim_reent (struct _reent *);
 # 12 "/home/xiaohui/workspace/dan/kendryte-toolchain/riscv64-unknown-elf/include/alloca.h" 2 3
-# 251 "/home/xiaohui/workspace/dan/temp/k210-freertos-mpy-makefile/ports/k210-freertos/mpy_support/mpconfigport.h" 2
+# 251 "./mpconfigport.h" 2
 # 46 "/home/xiaohui/workspace/dan/temp/k210-freertos-mpy-makefile/ports/k210-freertos/mpy_support/../../../py/mpconfig.h" 2
 # 588 "/home/xiaohui/workspace/dan/temp/k210-freertos-mpy-makefile/ports/k210-freertos/mpy_support/../../../py/mpconfig.h"
 
@@ -835,6 +835,12 @@ Q(FLOAT32)
 
 Q(FLOAT64)
 
+Q(FileIO)
+
+Q(FileIO)
+
+Q(FileIO)
+
 Q(GeneratorExit)
 
 Q(GeneratorExit)
@@ -937,6 +943,8 @@ Q(SystemExit)
 
 Q(SystemExit)
 
+Q(TextIOWrapper)
+
 Q(TimeoutError)
 
 Q(TypeError)
@@ -997,6 +1005,8 @@ Q(__contains__)
 
 Q(__contains__)
 
+Q(__del__)
+
 Q(__delete__)
 
 Q(__delete__)
@@ -1017,9 +1027,13 @@ Q(__enter__)
 
 Q(__enter__)
 
+Q(__enter__)
+
 Q(__eq__)
 
 Q(__eq__)
+
+Q(__exit__)
 
 Q(__exit__)
 
@@ -1241,6 +1255,8 @@ Q(_lt_module_gt_)
 
 Q(_lt_setcomp_gt_)
 
+Q(_lt_stdin_gt_)
+
 Q(_lt_string_gt_)
 
 Q(_space_)
@@ -1323,6 +1339,10 @@ Q(bool)
 
 Q(bound_method)
 
+Q(buffer)
+
+Q(buffering)
+
 Q(builtins)
 
 Q(builtins)
@@ -1368,6 +1388,10 @@ Q(clear)
 Q(clear)
 
 Q(clear)
+
+Q(close)
+
+Q(close)
 
 Q(close)
 
@@ -1467,6 +1491,10 @@ Q(enable)
 
 Q(encode)
 
+Q(encoding)
+
+Q(encoding)
+
 Q(end)
 
 Q(endswith)
@@ -1511,6 +1539,10 @@ Q(fabs)
 
 Q(file)
 
+Q(file)
+
+Q(file)
+
 Q(filter)
 
 Q(filter)
@@ -1524,6 +1556,8 @@ Q(float)
 Q(float)
 
 Q(floor)
+
+Q(flush)
 
 Q(flush)
 
@@ -1803,6 +1837,10 @@ Q(micropython)
 
 Q(micropython)
 
+Q(mode)
+
+Q(mode)
+
 Q(modf)
 
 Q(module)
@@ -1885,6 +1923,10 @@ Q(push)
 
 Q(qstr_info)
 
+Q(r)
+
+Q(r)
+
 Q(radians)
 
 Q(randint)
@@ -1911,6 +1953,12 @@ Q(read)
 
 Q(read)
 
+Q(read)
+
+Q(read)
+
+Q(readinto)
+
 Q(readinto)
 
 Q(readinto)
@@ -1926,6 +1974,10 @@ Q(readline)
 Q(readline)
 
 Q(readline)
+
+Q(readline)
+
+Q(readlines)
 
 Q(release)
 
@@ -1976,6 +2028,8 @@ Q(search)
 Q(search)
 
 Q(seed)
+
+Q(seek)
 
 Q(seek)
 
@@ -2230,6 +2284,10 @@ Q(websocket)
 Q(websocket)
 
 Q(websocket)
+
+Q(write)
+
+Q(write)
 
 Q(write)
 

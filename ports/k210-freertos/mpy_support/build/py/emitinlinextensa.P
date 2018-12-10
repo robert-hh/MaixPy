@@ -39,7 +39,7 @@ build/py/emitinlinextensa.o: ../../../py/emitinlinextensa.c \
  /home/xiaohui/workspace/dan/temp/k210-freertos-mpy-makefile/ports/k210-freertos/mpy_support/../../../py/emit.h \
  /home/xiaohui/workspace/dan/temp/k210-freertos-mpy-makefile/ports/k210-freertos/mpy_support/../../../py/lexer.h \
  /home/xiaohui/workspace/dan/temp/k210-freertos-mpy-makefile/ports/k210-freertos/mpy_support/../../../py/mpconfig.h \
- /home/xiaohui/workspace/dan/temp/k210-freertos-mpy-makefile/ports/k210-freertos/mpy_support/mpconfigport.h \
+ mpconfigport.h \
  /home/xiaohui/workspace/dan/kendryte-toolchain/lib/gcc/riscv64-unknown-elf/8.2.0/include/stdbool.h \
  /home/xiaohui/workspace/dan/kendryte-toolchain/riscv64-unknown-elf/include/alloca.h \
  /home/xiaohui/workspace/dan/temp/k210-freertos-mpy-makefile/ports/k210-freertos/mpy_support/../../../py/qstr.h \
@@ -95,7 +95,7 @@ build/py/emitinlinextensa.o: ../../../py/emitinlinextensa.c \
  /home/xiaohui/workspace/dan/temp/k210-freertos-mpy-makefile/ports/k210-freertos/mpy_support/../../../py/emit.h :
  /home/xiaohui/workspace/dan/temp/k210-freertos-mpy-makefile/ports/k210-freertos/mpy_support/../../../py/lexer.h :
  /home/xiaohui/workspace/dan/temp/k210-freertos-mpy-makefile/ports/k210-freertos/mpy_support/../../../py/mpconfig.h :
- /home/xiaohui/workspace/dan/temp/k210-freertos-mpy-makefile/ports/k210-freertos/mpy_support/mpconfigport.h :
+ mpconfigport.h :
  /home/xiaohui/workspace/dan/kendryte-toolchain/lib/gcc/riscv64-unknown-elf/8.2.0/include/stdbool.h :
  /home/xiaohui/workspace/dan/kendryte-toolchain/riscv64-unknown-elf/include/alloca.h :
  /home/xiaohui/workspace/dan/temp/k210-freertos-mpy-makefile/ports/k210-freertos/mpy_support/../../../py/qstr.h :

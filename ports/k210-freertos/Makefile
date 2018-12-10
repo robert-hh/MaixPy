@@ -19,6 +19,7 @@ CFLAGS :=
 LDFLAGS :=
 CXXFLAGS :=
 INC :=
+output-file :=
 ###############################################################################
 
 sinclude $(PLATFORM).mk

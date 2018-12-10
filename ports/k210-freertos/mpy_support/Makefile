@@ -13,6 +13,9 @@ MK_VALUE :="INC += "$(CUR_DIR_ADDR)"\n"
 MK_VALUE +="INC += "$(CUR_DIR_ADDR)"include/""\n"
 MK_VALUE +="INC += "$(CUR_DIR_ADDR)"../../../""\n"
 MK_VALUE +="INC += "$(CUR_DIR_ADDR)$(OUTPUT_DIR)"\n"
+MK_VALUE +="liba-mpy += "$(CUR_DIR_ADDR)$(OUTPUT_DIR)"mpy_support.a""\n"
+MK_VALUE +="output-file = "'$$(liba-mpy)'"\r\n"
+
 OUTPUT_STATIC_LIB := $(LIB_NAME).a
 CXX ?= $(CROSS_COMPILE)c++
 AR ?= $(CROSS_COMPILE)AR
@@ -40,10 +43,11 @@ MPY_EXT_SRC_C := \
 PLATFORM ?=
 ###############################################################################
 # COMPILE OPTIONS
-CFLAGS :=
-LDFLAGS :=
+# CFLAGS :=
+# LDFLAGS :=
 CXXFLAGS :=
 INC :=
+output-file :=
 ###############################################################################
 # IMPORT MK FILE
 # sinclude mk MICROPYTHON NEED OTHER MK,SO I INCLUDE THE MK WHERE IS IN ROOT DIR
@@ -72,19 +76,20 @@ SUBDIRS := $(GET_SUBDIRS2)
 FILE_MK := $(foreach n,$(SUBDIRS) , $(wildcard $(n)/mk))
 FILE_MAKEFILE := $(foreach n,$(SUBDIRS) , $(wildcard $(n)/Makefile))
 
-all: update_mk sub_compile compile
-
 $(BUILD)/_frozen_mpy.c: frozentest.mpy $(BUILD)/genhdr/qstrdefs.generated.h
 	$(ECHO) "MISC freezing bytecode"
 	$(Q)$(TOP)/tools/mpy-tool.py -f -q $(BUILD)/genhdr/qstrdefs.preprocessed.h -mlongint-impl=none $< > $@
+
+all: update_mk sub_compile compile $(OUTPUT_STATIC_LIB)
 
 ###############################################################################
 # COMPILE CUR SRC FILE
 SRC_C := $(wildcard *.c)
 SRC_CPP := $(wildcard *.cpp)
 SRC_C += $(MPY_EXT_SRC_C)
-C_OBJ := $(addprefix $(OUTPUT_DIR), $(SRC_C:.c=.o))
-OBJ += $(PY_O) $(C_OBJ) #USE MPY COMPILE SRICPT COMPILE SRC FILE
+C_OBJ := $(addprefix $(BUILD)/, $(SRC_C:.c=.o))
+OBJ += $(PY_O) $(C_OBJ)
+# USE MPY COMPILE SRICPT COMPILE SRC FILE
 CXX_OBJ := $(addprefix $(BUILD), $(SRC_CPP:.cpp=.o))
 INCLUDE_FLAGS := $(addprefix -I, $(INC))
 CFLAGS += $(INCLUDE_FLAGS)
@@ -95,27 +100,28 @@ SRC_QSTR += $(SRC_C)
 SRC_QSTR_AUTO_DEPS +=
 
 $(CXX_OBJ):%.o:%.cpp
-	mkdir -p $(dir $(OUTPUT_DIR)) 
+	mkdir -p $(dir $(OUTPUT_DIR))
 	$(Q)$(CXX)  -o $(OUTPUT_DIR)/$@ -c $< -I$(INC) $(CXXFLAGS) -lstdc++
 
-compile: $(BUILD)/_frozen_mpy.c $(OBJ) $(CXX_OBJ)
+# $(HEADER_BUILD)/qstr.i.last $(HEADER_BUILD)/qstrdefs.generated.h $(BUILD)/_frozen_mpy.c
+compile:  $(OBJ) $(CXX_OBJ)
 
 $(OUTPUT_STATIC_LIB):
-	$(AR) rcs -o $@ $(CXX_OBJ) $(OBJ)
+	$(Q)$(AR) rcs -o $(OUTPUT_DIR)$@ $(CXX_OBJ) $(OBJ)
 ###############################################################################
 
 sub_compile:
-#$(call mod_echo_func,"C_OBJ "$(C_OBJ)" ...")
 	$(foreach n,$(FILE_MAKEFILE),$(call sub_make,$(n)))
 
 update_mk:
 #-rm -f mk
 # $(call mod_echo_func,"INC "$(INC)" ...")
-	$(call mod_echo_func,"CFLAGS "$(CFLAGS)" ...")
-	$(call mod_echo_func,"update mk file"" ...")
+# $(call mod_echo_func,"OBJ "$(OBJ)" ...")
+# $(call mod_echo_func,"CFLAGS "$(CFLAGS)" ...")
+# $(call mod_echo_func,"update mk file"" ...")
 	$(shell echo -e $(MK_VALUE)$(foreach n,$(FILE_MK),"include "$(CUR_DIR_ADDR)$(n)"\n") > mk)
-	
-clean:
+
+clean_all:
 	rm -f mk
 	$(call mod_echo_func,"Cleaning "$(SUBDIRS)" ...")
 	$(foreach n,$(FILE_MAKEFILE),$(call sub_clean, $(n)))

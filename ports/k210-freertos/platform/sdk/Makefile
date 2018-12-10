@@ -36,7 +36,7 @@ MK_VALUE +="liba-posix := "$(CUR_DIR_ADDR)$(OUTPUT_DIR)"SDK/posix/libposix.a""\r
 MK_VALUE +="liba-fatfs := "$(CUR_DIR_ADDR)$(OUTPUT_DIR)"third_party/fatfs/libfatfs.a""\r\n"
 MK_VALUE +="liba-drivers := "$(CUR_DIR_ADDR)$(OUTPUT_DIR)"SDK/drivers/libdrivers.a""\r\n"
 MK_VALUE +="liba-libfreertos := "$(CUR_DIR_ADDR)$(OUTPUT_DIR)"SDK/libfreertos.a""\r\n"
-MK_VALUE +="output-file := "'$$(liba-bsp) $$(liba-hal) $$(liba-posix) $$(liba-fatfs) $$(liba-drivers) $$(liba-libfreertos)'"\r\n"
+MK_VALUE +="output-file = "'$$(liba-bsp) $$(liba-hal) $$(liba-posix) $$(liba-fatfs) $$(liba-drivers) $$(liba-libfreertos)'"\r\n"
 
 ####################################
 
