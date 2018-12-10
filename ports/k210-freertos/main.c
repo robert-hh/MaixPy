@@ -39,12 +39,30 @@
 #include "fpioa.h"
 #include "gpio.h"
 #include "timer.h"
-#include "w25qxx.h"
 #include "uarths.h"
-#include "spiffs-port.h"
+//#include "spiffs-port.h"
 /*****freeRTOS****/
 #include "FreeRTOS.h"
 #include "task.h"
+
+//************************************************************************************************
+//temp ops
+mp_import_stat_t mp_vfs_import_stat(const char *path) {
+
+    //if (st_mode & MP_S_IFDIR) {
+    //    return MP_IMPORT_STAT_DIR;
+    //} else {
+    //    return MP_IMPORT_STAT_FILE;
+    //}
+
+    //if (SPIFFS_stat(&fs,path, &st) == 0) {
+        return MP_IMPORT_STAT_FILE;
+    //}else{
+        //return MP_IMPORT_STAT_NO_EXIST;
+    //}
+    
+}
+//************************************************************************************************
 
 #define UART_BUF_LENGTH_MAX 269
 #define MPY_HEAP_SIZE 1 * 1024 * 1024
@@ -119,13 +137,13 @@ int main()
 	sysctl_set_power_mode(SYSCTL_POWER_BANK6,SYSCTL_POWER_V33);
 	sysctl_set_power_mode(SYSCTL_POWER_BANK7,SYSCTL_POWER_V33);
 	
-	uint8_t manuf_id, device_id;
-	spi3 = io_open("/dev/spi3");
-	configASSERT(spi3);
-	w25qxx_init(spi3);
-	w25qxx_read_id(&manuf_id, &device_id);
-	printf("[MAIXPY]Flash:0x%02x:0x%02x\n", manuf_id, device_id);
-	my_spiffs_init();
+	//uint8_t manuf_id, device_id;
+	//spi3 = io_open("/dev/spi3");
+	//configASSERT(spi3);
+	//w25qxx_init(spi3);
+	//w25qxx_read_id(&manuf_id, &device_id);
+	//printf("[MAIXPY]Flash:0x%02x:0x%02x\n", manuf_id, device_id);
+	//my_spiffs_init();
 	
 	xTaskCreateAtProcessor(0, // processor
 					     mp_task, // function entry

@@ -14,7 +14,7 @@ MK_VALUE +="INC += "$(CUR_DIR_ADDR)"include/""\n"
 MK_VALUE +="INC += "$(CUR_DIR_ADDR)"../../../""\n"
 MK_VALUE +="INC += "$(CUR_DIR_ADDR)$(OUTPUT_DIR)"\n"
 MK_VALUE +="liba-mpy += "$(CUR_DIR_ADDR)$(OUTPUT_DIR)"mpy_support.a""\n"
-MK_VALUE +="output-file = "'$$(liba-mpy)'"\r\n"
+MK_VALUE +="output-file += "'$$(liba-mpy)'"\r\n"
 
 OUTPUT_STATIC_LIB := $(LIB_NAME).a
 CXX ?= $(CROSS_COMPILE)c++
@@ -51,7 +51,7 @@ output-file :=
 ###############################################################################
 # IMPORT MK FILE
 # sinclude mk MICROPYTHON NEED OTHER MK,SO I INCLUDE THE MK WHERE IS IN ROOT DIR
-include ../mk
+sinclude ../mk
 ###############################################################################
 # IMPORT PLATFORM OPTIONS
 sinclude $(PLATFORM).mk
@@ -87,6 +87,10 @@ all: update_mk sub_compile compile $(OUTPUT_STATIC_LIB)
 SRC_C := $(wildcard *.c)
 SRC_CPP := $(wildcard *.cpp)
 SRC_C += $(MPY_EXT_SRC_C)
+########################
+# temp
+SRC_C += $(BUILD)/_frozen_mpy.c
+
 C_OBJ := $(addprefix $(BUILD)/, $(SRC_C:.c=.o))
 OBJ += $(PY_O) $(C_OBJ)
 # USE MPY COMPILE SRICPT COMPILE SRC FILE
@@ -104,10 +108,10 @@ $(CXX_OBJ):%.o:%.cpp
 	$(Q)$(CXX)  -o $(OUTPUT_DIR)/$@ -c $< -I$(INC) $(CXXFLAGS) -lstdc++
 
 # $(HEADER_BUILD)/qstr.i.last $(HEADER_BUILD)/qstrdefs.generated.h $(BUILD)/_frozen_mpy.c
-compile:  $(OBJ) $(CXX_OBJ)
+compile: $(BUILD)/_frozen_mpy.c $(OBJ) $(CXX_OBJ) 
 
 $(OUTPUT_STATIC_LIB):
-	$(Q)$(AR) rcs -o $(OUTPUT_DIR)$@ $(CXX_OBJ) $(OBJ)
+	$(Q)$(AR) rcs -o $(OUTPUT_DIR)$@ $(CXX_OBJ) $(OBJ) $(LIBS) $(LDFLAGS)
 ###############################################################################
 
 sub_compile:
@@ -119,9 +123,9 @@ update_mk:
 # $(call mod_echo_func,"OBJ "$(OBJ)" ...")
 # $(call mod_echo_func,"CFLAGS "$(CFLAGS)" ...")
 # $(call mod_echo_func,"update mk file"" ...")
-	$(shell echo -e $(MK_VALUE)$(foreach n,$(FILE_MK),"include "$(CUR_DIR_ADDR)$(n)"\n") > mk)
+	$(shell echo -e $(MK_VALUE)$(foreach n,$(FILE_MK),"-include "$(CUR_DIR_ADDR)$(n)"\n") > mk)
 
-clean_all:
+clean_all: clean
 	rm -f mk
 	$(call mod_echo_func,"Cleaning "$(SUBDIRS)" ...")
 	$(foreach n,$(FILE_MAKEFILE),$(call sub_clean, $(n)))

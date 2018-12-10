@@ -6,10 +6,18 @@
 CUR_DIR_ADDR := $(shell pwd)/
 ###############################################################################
 # USER OPTION
-LIB_NAME ?= maixpy
+LIB_NAME ?= Maixpy
 CROSS_COMPILE ?= 
+OUTPUT_DIR := build/
 MK_VALUE :="INC += "".""\n"
 MK_VALUE +="INC += ""include/""\n"
+OUTPUT_BIN := maixpy.bin
+CC := $(CROSS_COMPILE)gcc
+CXX ?= $(CROSS_COMPILE)c++
+AR ?= $(CROSS_COMPILE)AR
+OBJCOPY ?= $(CROSS_COMPILE)objcopy
+
+CRT_DIR_ADDR ?=$(dir $(CROSS_COMPILE))/../lib/gcc/riscv64-unknown-elf/8.2.0/
 ###############################################################################
 # Optional options
 PLATFORM ?=
@@ -20,12 +28,18 @@ LDFLAGS :=
 CXXFLAGS :=
 INC :=
 output-file :=
+platform-lds :=
 ###############################################################################
-
+sinclude mk
 sinclude $(PLATFORM).mk
 
 define sub_clean
-	$(MAKE) -C $(1) clean CROSS_COMPILE=$(CROSS_COMPILE) PLATFORM=$(PLATFORM);
+	if [ "$(1)" != " mpy_support/" ] ; \
+	then \
+	$(MAKE) -C $(1) clean CROSS_COMPILE=$(CROSS_COMPILE) PLATFORM=$(PLATFORM); \
+	else \
+	$(MAKE) -C $(1) clean_all CROSS_COMPILE=$(CROSS_COMPILE) PLATFORM=$(PLATFORM); \
+	fi;
 endef
 
 define sub_make
@@ -56,10 +70,66 @@ FILE_MAKEFILE := $(foreach n,$(SUBDIRS) , $(wildcard $(n)/Makefile))
 
 FILE_MK := $(foreach n,$(SUBDIRS) , $(wildcard $(n)/mk))
 
-all: do_mk update_all_platform_mk update_mk compile
-	
+all: do_mk update_all_platform_mk update_mk sub_compile compile $(OUTPUT_BIN)
 
-compile:
+SRC_C := $(wildcard *.c)
+SRC_CPP := $(wildcard *.cpp)
+SRC_C_OBJ := $(SRC_C:.c=.o)
+CXX_OBJ := $(SRC_CPP:.cpp=.o)
+INCLUDE_FLAGS := $(addprefix -I, $(INC))
+CFLAGS += $(INCLUDE_FLAGS)
+$(CXX_OBJ):%.o:%.cpp
+	mkdir -p $(dir $(OUTPUT_DIR))
+	$(CXX)  -o $(OUTPUT_DIR)/$@ -c $< $(INCLUDE_FLAGS) $(CXXFLAGS) -lstdc++
+$(SRC_C_OBJ):%.o:%.c
+	mkdir -p $(dir $(OUTPUT_DIR))
+	$(CC)  -o $(OUTPUT_DIR)/$@ -c $< $(INCLUDE_FLAGS) $(CFLAGS) -lstdc++
+
+SRC_C_OUTPUT_OBJ := $(addprefix $(OUTPUT_DIR), $(SRC_C_OBJ))
+
+CRT_FALGS := $(CRT_DIR_ADDR)crti.o 
+CRT_FALGS += $(CRT_DIR_ADDR)crtbegin.o $(SRC_C_OUTPUT_OBJ)
+CRT_FALGS += $(CRT_DIR_ADDR)crtend.o
+CRT_FALGS += $(CRT_DIR_ADDR)crtn.o
+
+BIN_LDFLAGS := \
+		-nostartfiles \
+		-static \
+		-Wl,--gc-sections \
+		-Wl,-static \
+		-Wl,--start-group \
+		-Wl,--whole-archive \
+		-Wl,--no-whole-archive \
+		-Wl,--end-group \
+		-Wl,-EL \
+		-T \
+		$(platform-lds) \
+		$(CRT_FALGS) \
+		-Wl,--start-group \
+		-lm \
+		$(output-file) \
+		$(liba-libfreertos) \
+		-latomic \
+		$(liba-bsp) \
+		-lc \
+		-lstdc++ \
+		$(CXX_OBJ) \
+		-Wl,--end-group \
+		$(liba-fatfs) \
+		$(liba-hal) \
+		-lm \
+		-lstdc++ \
+		-lm
+
+$(LIB_NAME):
+	$(CC) $(CFLAGS) $(BIN_LDFLAGS) -o $@
+
+$(OUTPUT_BIN):$(LIB_NAME)
+	$(OBJCOPY) --output-format=binary $(LIB_NAME) $@
+
+compile:$(SRC_C_OBJ) $(CXX_OBJ)
+
+sub_compile:
 	$(call mod_echo_func,"Compiling "$(SUBDIRS)" ...")
 	$(foreach n,$(FILE_MAKEFILE),$(call sub_make, $(dir $(n))))
 	$(call mod_echo_func,"compile "$(SUBDIRS)" .")
@@ -67,7 +137,7 @@ compile:
 
 update_mk:
 	$(call mod_echo_func,"update mk file"" ...")
-	$(shell echo -e $(MK_VALUE)$(foreach n,$(FILE_MK),"include "$(CUR_DIR_ADDR)$(n)"\n") > mk)
+	$(shell echo -e $(MK_VALUE)$(foreach n,$(FILE_MK),"-include "$(CUR_DIR_ADDR)$(n)"\n") > mk)
 
 update_all_platform_mk:
 	$(call mod_echo_func,"PLATFORM_MK"$(PLATFORM_MK)" ...")
@@ -80,5 +150,6 @@ clean:
 	$(call mod_echo_func,"Cleaning "$(SUBDIRS)" ...")
 	$(foreach n,$(FILE_MAKEFILE),$(call sub_clean, $(dir $(n))))
 	rm -f mk
+	rm -rf build
 
 

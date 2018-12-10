@@ -51,7 +51,7 @@ compile:
 
 update_mk:
 	$(call mod_echo_func,"update mk file"$(FILE_MK)" ...")
-	$(shell echo -e $(MK_VALUE)$(foreach n,$(FILE_MK),"include "$(CUR_DIR_ADDR)$(n)"\n") > mk)
+	$(shell echo -e $(MK_VALUE)$(foreach n,$(FILE_MK),"-include "$(CUR_DIR_ADDR)$(n)"\n") > mk)
 
 clean:
 	rm -f mk

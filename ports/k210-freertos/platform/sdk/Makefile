@@ -31,13 +31,13 @@ MK_VALUE +="INC += "$(SDK_DIR_ADDR)"third_party/fatfs/source/""\r\n"
 MK_VALUE +="INC += "$(SDK_DIR_ADDR)"third_party/""\r\n"
 
 MK_VALUE +="liba-bsp := "$(CUR_DIR_ADDR)$(OUTPUT_DIR)"SDK/bsp/libbsp.a""\r\n"
-MK_VALUE +="liba-hal := "$(CUR_DIR_ADDR)$(OUTPUT_DIR)"SDK/libhal.a""\r\n"
+MK_VALUE +="liba-hal := "$(CUR_DIR_ADDR)$(OUTPUT_DIR)"SDK/hal/libhal.a""\r\n"
 MK_VALUE +="liba-posix := "$(CUR_DIR_ADDR)$(OUTPUT_DIR)"SDK/posix/libposix.a""\r\n"
 MK_VALUE +="liba-fatfs := "$(CUR_DIR_ADDR)$(OUTPUT_DIR)"third_party/fatfs/libfatfs.a""\r\n"
 MK_VALUE +="liba-drivers := "$(CUR_DIR_ADDR)$(OUTPUT_DIR)"SDK/drivers/libdrivers.a""\r\n"
-MK_VALUE +="liba-libfreertos := "$(CUR_DIR_ADDR)$(OUTPUT_DIR)"SDK/libfreertos.a""\r\n"
-MK_VALUE +="output-file = "'$$(liba-bsp) $$(liba-hal) $$(liba-posix) $$(liba-fatfs) $$(liba-drivers) $$(liba-libfreertos)'"\r\n"
-
+MK_VALUE +="liba-libfreertos := "$(CUR_DIR_ADDR)$(OUTPUT_DIR)"SDK/freertos/libfreertos.a""\r\n"
+MK_VALUE +="output-file += "'$$(liba-bsp) $$(liba-hal) $$(liba-posix) $$(liba-fatfs) $$(liba-drivers) $$(liba-libfreertos)'"\r\n"
+MK_VALUE +="platform-lds += "$(CUR_DIR_ADDR)"kendryte-freertos-sdk/lds/kendryte.ld""\r\n"
 ####################################
 
 define mod_echo_func

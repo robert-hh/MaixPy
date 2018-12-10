@@ -91,7 +91,8 @@ extern const struct _mp_print_t mp_debug_print;
 #define MICROPY_PY_GC               (1)
 #define MICROPY_MODULE_FROZEN_STR           (0)
 #define MICROPY_MODULE_FROZEN_MPY           (1)
-#define MICROPY_LONGINT_IMPL                (MICROPY_LONGINT_IMPL_MPZ)
+#define MICROPY_LONGINT_IMPL                (0)
+//MICROPY_LONGINT_IMPL_MPZ
 #define MICROPY_FLOAT_IMPL                  (MICROPY_FLOAT_IMPL_DOUBLE)
 #define MICROPY_PY_BUILTINS_HELP    (1)
 #define MICROPY_PY_BUILTINS_HELP_TEXT       kendryte_k210_help_text
@@ -228,8 +229,8 @@ extern const struct _mp_obj_module_t uos_module;
 // extern const struct _mp_obj_module_t app_module;
 // extern const struct _mp_obj_module_t socket_module;
 #define MICROPY_PORT_BUILTIN_MODULES \
-    { MP_OBJ_NEW_QSTR(MP_QSTR_uos), (mp_obj_t)&uos_module }, \
-    { MP_OBJ_NEW_QSTR(MP_QSTR_os), (mp_obj_t)&uos_module }, \
+    //{ MP_OBJ_NEW_QSTR(MP_QSTR_uos), (mp_obj_t)&uos_module }, \
+    //{ MP_OBJ_NEW_QSTR(MP_QSTR_os), (mp_obj_t)&uos_module }, \
     //{ MP_OBJ_NEW_QSTR(MP_QSTR_machine), (mp_obj_t)&machine_module },\
     // { MP_OBJ_NEW_QSTR(MP_QSTR_usocket), (mp_obj_t)&socket_module }, \
     // { MP_OBJ_NEW_QSTR(MP_QSTR_socket), (mp_obj_t)&socket_module }, \
@@ -237,7 +238,6 @@ extern const struct _mp_obj_module_t uos_module;
 
 
 #define MICROPY_PORT_BUILTIN_MODULE_WEAK_LINKS \
-    { MP_OBJ_NEW_QSTR(MP_QSTR_os), (mp_obj_t)&uos_module }, \
     { MP_OBJ_NEW_QSTR(MP_QSTR_re), (mp_obj_t)&mp_module_ure }, \
     { MP_OBJ_NEW_QSTR(MP_QSTR_binascii), (mp_obj_t)&mp_module_ubinascii }, \
     { MP_OBJ_NEW_QSTR(MP_QSTR_collections), (mp_obj_t)&mp_module_collections }, \
