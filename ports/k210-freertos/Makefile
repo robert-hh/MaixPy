@@ -16,7 +16,7 @@ CC := $(CROSS_COMPILE)gcc
 CXX ?= $(CROSS_COMPILE)c++
 AR ?= $(CROSS_COMPILE)AR
 OBJCOPY ?= $(CROSS_COMPILE)objcopy
-
+SIZE = $(CROSS_COMPILE)size
 CRT_DIR_ADDR ?=$(dir $(CROSS_COMPILE))/../lib/gcc/riscv64-unknown-elf/8.2.0/
 ###############################################################################
 # Optional options
@@ -70,7 +70,7 @@ FILE_MAKEFILE := $(foreach n,$(SUBDIRS) , $(wildcard $(n)/Makefile))
 
 FILE_MK := $(foreach n,$(SUBDIRS) , $(wildcard $(n)/mk))
 
-all: do_mk update_all_platform_mk update_mk sub_compile compile $(OUTPUT_BIN)
+all: do_mk update_all_platform_mk update_mk sub_compile compile $(OUTPUT_BIN) print_bin_size
 
 SRC_C := $(wildcard *.c)
 SRC_CPP := $(wildcard *.cpp)
@@ -123,6 +123,9 @@ BIN_LDFLAGS := \
 
 $(LIB_NAME):
 	$(CC) $(CFLAGS) $(BIN_LDFLAGS) -o $@
+
+print_bin_size:
+	$(SIZE) $(LIB_NAME)
 
 $(OUTPUT_BIN):$(LIB_NAME)
 	$(OBJCOPY) --output-format=binary $(LIB_NAME) $@
