@@ -57,8 +57,6 @@ SRC_C += $(addprefix $(CPATH)/, $(CFILES))
 SRC_C += spiffs-port/spiffs-port.c
 C_OBJ :=  $(SRC_C:.c=.o)
 
-FILE_MK := $(foreach n,$(SUBDIRS) , $(wildcard $(n)/mk))
-
 INCLUDE_FLAGS := $(addprefix -I, $(INC))
 
 CFLAGS += $(INCLUDE_FLAGS)
@@ -67,7 +65,7 @@ $(C_OBJ):%.o:%.c
 	mkdir -p $(dir $(OUTPUT_DIR)$@) 
 	$(CC)  -o $(OUTPUT_DIR)$@ -c $< $(CFLAGS)
 
-all: update_mk compile $(C_OBJ) $(OUTPUT_STATIC_LIB)
+all: compile $(C_OBJ) $(OUTPUT_STATIC_LIB)
 
 OUTPUT_OBJ:=$(addprefix $(OUTPUT_DIR), $(C_OBJ))
 $(OUTPUT_STATIC_LIB):
@@ -78,8 +76,7 @@ compile:
 # $(foreach n,$(FILE_MAKEFILE),$(call sub_make,$(n)))
 
 update_mk:
-	$(call mod_echo_func,"update mk file"$(FILE_MK)" ...")
-	$(shell echo -e $(MK_VALUE)$(foreach n,$(FILE_MK),"-include "$(CUR_DIR_ADDR)$(n)"\n") > mk)
+	$(shell echo $(MK_VALUE)$(foreach nn,$(foreach n,$(SUBDIRS) , $(wildcard $(n)/mk)),"-include "$(CUR_DIR_ADDR)$(nn)"\n") > mk)
 
 clean:
 	rm -f mk

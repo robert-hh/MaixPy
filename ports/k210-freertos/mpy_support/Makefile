@@ -67,20 +67,25 @@ define sub_make
 	$(call mod_echo_func,$(dir $(1)))
 	$(MAKE) -C $(basename $(patsubst %/,%,$(patsubst ./%,%,$(dir $(1))))) all CROSS_COMPILE=$(CROSS_COMPILE) PLATFORM=$(PLATFORM)
 endef
+define update_sub_mk
+	if [ "$(dir $(1))" != "./" ] ; \
+	then \
+		$(MAKE) -C $(1) update_mk CROSS_COMPILE=$(CROSS_COMPILE) PLATFORM=$(PLATFORM); \
+	fi;
+endef
 ###############################################################################
 GET_SUBDIRS1 := $(shell find . -maxdepth 1 -type d)
 GET_SUBDIRS2 := $(basename $(patsubst ./%,%,$(GET_SUBDIRS1)))
 SUBDIRS := $(GET_SUBDIRS2)
 
 # AllDirs := $(shell ls -R | grep '^\./.*:$$' | awk '{gsub(":","");print}') .
-FILE_MK := $(foreach n,$(SUBDIRS) , $(wildcard $(n)/mk))
 FILE_MAKEFILE := $(foreach n,$(SUBDIRS) , $(wildcard $(n)/Makefile))
 
 $(BUILD)/_frozen_mpy.c: frozentest.mpy $(BUILD)/genhdr/qstrdefs.generated.h
 	$(ECHO) "MISC freezing bytecode"
 	$(Q)$(TOP)/tools/mpy-tool.py -f -q $(BUILD)/genhdr/qstrdefs.preprocessed.h -mlongint-impl=none $< > $@
 
-all: update_mk sub_compile compile $(OUTPUT_STATIC_LIB)
+all: sub_compile compile $(OUTPUT_STATIC_LIB)
 
 ###############################################################################
 # COMPILE CUR SRC FILE
@@ -123,8 +128,8 @@ update_mk:
 # $(call mod_echo_func,"OBJ "$(OBJ)" ...")
 # $(call mod_echo_func,"CFLAGS "$(CFLAGS)" ...")
 # $(call mod_echo_func,"update mk file"" ...")
-	$(shell echo -e $(MK_VALUE)$(foreach n,$(FILE_MK),"-include "$(CUR_DIR_ADDR)$(n)"\n") > mk)
-
+	$(foreach n,$(FILE_MAKEFILE),$(call update_sub_mk, $(dir $(n))))
+	$(shell echo $(MK_VALUE)$(foreach nn,$(foreach n,$(SUBDIRS) , $(wildcard $(n)/mk)),"-include "$(CUR_DIR_ADDR)$(nn)"\n") > mk)
 clean_all: clean
 	rm -f mk
 	$(call mod_echo_func,"Cleaning "$(SUBDIRS)" ...")

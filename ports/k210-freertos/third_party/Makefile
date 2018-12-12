@@ -10,6 +10,9 @@ LIB_NAME ?= third_party
 CROSS_COMPILE ?= 
 MK_VALUE :=
 OUTPUT_STATIC_LIB := $(LIB_NAME).a
+CC := $(CROSS_COMPILE)gcc
+CXX ?= $(CROSS_COMPILE)c++
+AR ?= $(CROSS_COMPILE)AR
 ####################################
 # Optional options
 PLATFORM ?=
@@ -20,6 +23,9 @@ sinclude mk
 ###############################################################################
 # IMPORT PLATFORM OPTIONS
 sinclude $(PLATFORM).mk
+###############################################################################
+# COMPILE OPTIONS
+CFLAGS :=
 ###############################################################################
 # SOME FUNCTIONS
 define mod_echo_func
@@ -33,25 +39,41 @@ define sub_make
 	$(MAKE) -C $(basename $(patsubst %/,%,$(patsubst ./%,%,$(dir $(1))))) all CROSS_COMPILE=$(CROSS_COMPILE) PLATFORM=$(PLATFORM)
 
 endef
+define update_sub_mk
+	if [ "$(dir $(1))" != "./" ] ; \
+	then \
+		$(MAKE) -C $(1) update_mk CROSS_COMPILE=$(CROSS_COMPILE) PLATFORM=$(PLATFORM); \
+	fi;
+endef
 ###############################################################################
 GET_SUBDIRS1 := $(shell find . -maxdepth 1 -type d)
 GET_SUBDIRS2 := $(basename $(patsubst ./%,%,$(GET_SUBDIRS1)))
 SUBDIRS := $(GET_SUBDIRS2)
 
-SRC_C := $(wildcard *.c))
+SRC_C := $(wildcard *.c)
 SRC_CPP := $(wildcard *.cpp)
+SRC_C_OBJ := $(SRC_C:.c=.o)
+CXX_OBJ := $(SRC_CPP:.cpp=.o)
+INCLUDE_FLAGS := $(addprefix -I, $(INC))
+CFLAGS += $(INCLUDE_FLAGS)
+$(CXX_OBJ):%.o:%.cpp
+	mkdir -p $(dir $(OUTPUT_DIR))
+	$(CXX)  -o $(OUTPUT_DIR)/$@ -c $< $(INCLUDE_FLAGS) $(CXXFLAGS) -lstdc++
+$(SRC_C_OBJ):%.o:%.c
+	mkdir -p $(dir $(OUTPUT_DIR))
+	$(CC)  -o $(OUTPUT_DIR)/$@ -c $< $(INCLUDE_FLAGS) $(CFLAGS) -lstdc++
 
-FILE_MK := $(foreach n,$(SUBDIRS) , $(wildcard $(n)/mk))
 FILE_MAKEFILE := $(foreach n,$(SUBDIRS) , $(wildcard $(n)/Makefile))
 
-all: update_mk compile
+all: compile
 
 compile:
 	$(foreach n,$(FILE_MAKEFILE),$(call sub_make,$(n)))
 
 update_mk:
-	$(call mod_echo_func,"update mk file"$(FILE_MK)" ...")
-	$(shell echo -e $(MK_VALUE)$(foreach n,$(FILE_MK),"-include "$(CUR_DIR_ADDR)$(n)"\n") > mk)
+	$(foreach n,$(FILE_MAKEFILE),$(call update_sub_mk, $(dir $(n))))
+	$(call mod_echo_func,"thirdparty update mk file"$(foreach n,$(SUBDIRS) , $(wildcard $(n)/mk))" ...")
+	$(shell echo $(MK_VALUE)$(foreach nn,$(foreach n,$(SUBDIRS) , $(wildcard $(n)/mk)),"-include "$(CUR_DIR_ADDR)$(nn)"\n") > mk)
 
 clean:
 	rm -f mk

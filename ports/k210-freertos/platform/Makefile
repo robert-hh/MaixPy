@@ -32,7 +32,12 @@ define sub_make
 	$(MAKE) -C $(basename $(patsubst %/,%,$(patsubst ./%,%,$(dir $(1))))) all CROSS_COMPILE=$(CROSS_COMPILE) PLATFORM=$(PLATFORM)
 
 endef
-
+define update_sub_mk
+	if [ "$(dir $(1))" != "./" ] ; \
+	then \
+		$(MAKE) -C $(1) update_mk CROSS_COMPILE=$(CROSS_COMPILE) PLATFORM=$(PLATFORM); \
+	fi;
+endef
 # MAKEFILE_LIST_LASTWORD = $(lastword $(MAKEFILE_LIST))
 # MAKEFILE_PATH := $(abspath $(MAKEFILE_LIST_LASTWORD))
 # MAKEFILE_DIR := $(dir $(MAKEFILE_PATH))
@@ -49,10 +54,9 @@ SRC_C := $(wildcard *.c))
 SRC_CPP := $(wildcard *.cpp)
 
 # AllDirs := $(shell ls -R | grep '^\./.*:$$' | awk '{gsub(":","");print}') .
-FILE_MK := $(foreach n,$(SUBDIRS) , $(wildcard $(n)/mk))
 FILE_MAKEFILE := $(foreach n,$(SUBDIRS) , $(wildcard $(n)/Makefile))
 
-all: update_mk compile
+all: compile
 	$(call mod_echo_func,"CUR_DIR "$(CUR_DIR)" ...")
 
 compile:
@@ -60,9 +64,8 @@ compile:
 	$(foreach n,$(FILE_MAKEFILE),$(call sub_make,$(n)))
 
 update_mk:
-	$(call mod_echo_func,"update mk file"$(FILE_MK)" ...")
-	$(shell echo $(MK_VALUE)$(foreach n,$(FILE_MK),"-include "$(CUR_DIR_ADDR)$(n)"\n") > mk)
-
+	$(foreach n,$(FILE_MAKEFILE),$(call update_sub_mk, $(dir $(n))))
+	$(shell echo $(MK_VALUE)$(foreach nn,$(foreach n,$(SUBDIRS) , $(wildcard $(n)/mk)),"-include "$(CUR_DIR_ADDR)$(nn)"\n") > mk)
 clean:
 	rm -f mk
 	$(call mod_echo_func,"Cleaning "$(SUBDIRS)" ...")

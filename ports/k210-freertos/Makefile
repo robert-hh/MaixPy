@@ -60,6 +60,13 @@ define update_sub_platform_mk
 	fi;
 endef
 
+define update_sub_mk
+	if [ "$(dir $(1))" != "./" ] ; \
+	then \
+		$(MAKE) -C $(1) update_mk CROSS_COMPILE=$(CROSS_COMPILE) PLATFORM=$(PLATFORM); \
+	fi;
+endef
+
 GET_SUBDIRS1 := $(shell find . -maxdepth 1 -type d)
 GET_SUBDIRS2 := $(basename $(patsubst ./%,%,$(GET_SUBDIRS1)))
 SUBDIRS := $(GET_SUBDIRS2)
@@ -68,9 +75,7 @@ AllDirs := $(shell ls -R | grep '^\./.*:$$' | awk '{gsub(":","");print}') .
 PLATFORM_MK := $(foreach n,$(AllDirs) , $(wildcard $(n)/$(PLATFORM).mk))
 FILE_MAKEFILE := $(foreach n,$(SUBDIRS) , $(wildcard $(n)/Makefile))
 
-FILE_MK := $(foreach n,$(SUBDIRS) , $(wildcard $(n)/mk))
-
-all: do_mk update_all_platform_mk update_mk sub_compile compile $(OUTPUT_BIN) print_bin_size
+all: do_mk update_all_platform_mk sub_compile compile $(OUTPUT_BIN) print_bin_size
 
 SRC_C := $(wildcard *.c)
 SRC_CPP := $(wildcard *.cpp)
@@ -140,7 +145,8 @@ sub_compile:
 
 update_mk:
 	$(call mod_echo_func,"update mk file"" ...")
-	$(shell echo -e $(MK_VALUE)$(foreach n,$(FILE_MK),"-include "$(CUR_DIR_ADDR)$(n)"\n") > mk)
+	$(foreach n,$(FILE_MAKEFILE),$(call update_sub_mk, $(dir $(n))))
+	$(shell echo $(MK_VALUE)$(foreach nn,$(foreach n,$(SUBDIRS) , $(wildcard $(n)/mk)),"-include "$(CUR_DIR_ADDR)$(nn)"\n") > mk)
 
 update_all_platform_mk:
 	$(call mod_echo_func,"PLATFORM_MK"$(PLATFORM_MK)" ...")
