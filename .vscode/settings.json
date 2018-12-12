@@ -1,6 +1,7 @@
 {
     "files.associations": {
-        "uarths.h": "c"
+        "uarths.h": "c",
+        "fpioa.h": "c"
     },
     "C_Cpp.dimInactiveRegions": false
 }

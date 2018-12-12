@@ -67,9 +67,8 @@ $(C_OBJ):%.o:%.c
 
 all: compile $(C_OBJ) $(OUTPUT_STATIC_LIB)
 
-OUTPUT_OBJ:=$(addprefix $(OUTPUT_DIR), $(C_OBJ))
-$(OUTPUT_STATIC_LIB):
-	$(Q)$(AR) rcs -o $(OUTPUT_DIR)$@ $(OUTPUT_OBJ)
+$(OUTPUT_STATIC_LIB):$(C_OBJ)
+	$(Q)$(AR) rcs -o $(OUTPUT_DIR)$@ $(addprefix $(OUTPUT_DIR), $(C_OBJ))
 
 compile:
 	$(call mod_echo_func,"AllDirs "$(AllDirs)" ...")

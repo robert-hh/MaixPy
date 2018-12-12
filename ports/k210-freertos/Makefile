@@ -126,7 +126,7 @@ BIN_LDFLAGS := \
 		-lstdc++ \
 		-lm
 
-$(LIB_NAME):
+$(LIB_NAME): $(output-file)
 	@$(CC) $(CFLAGS) $(BIN_LDFLAGS) -o $@
 
 print_bin_size:
@@ -160,5 +160,6 @@ clean:
 	$(foreach n,$(FILE_MAKEFILE),$(call sub_clean, $(dir $(n))))
 	rm -f mk
 	rm -rf build
+	rm -rf $(LIB_NAME) $(OUTPUT_BIN)
 
 
