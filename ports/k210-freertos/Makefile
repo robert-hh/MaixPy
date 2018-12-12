@@ -91,9 +91,10 @@ $(SRC_C_OBJ):%.o:%.c
 	@$(CC)  -o $(OUTPUT_DIR)/$@ -c $< $(INCLUDE_FLAGS) $(CFLAGS) -lstdc++
 
 SRC_C_OUTPUT_OBJ := $(addprefix $(OUTPUT_DIR), $(SRC_C_OBJ))
+SRC_CXX_OUTPUT_OBJ := $(addprefix $(OUTPUT_DIR), $(CXX_OBJ))
 
 CRT_FALGS := $(CRT_DIR_ADDR)crti.o 
-CRT_FALGS += $(CRT_DIR_ADDR)crtbegin.o $(SRC_C_OUTPUT_OBJ)
+CRT_FALGS += $(CRT_DIR_ADDR)crtbegin.o $(SRC_C_OUTPUT_OBJ) $(SRC_CXX_OUTPUT_OBJ)
 CRT_FALGS += $(CRT_DIR_ADDR)crtend.o
 CRT_FALGS += $(CRT_DIR_ADDR)crtn.o
 
@@ -112,6 +113,7 @@ BIN_LDFLAGS := \
 		$(CRT_FALGS) \
 		-Wl,--start-group \
 		-lm \
+		$(SRC_CXX_OUTPUT_OBJ) \
 		$(output-file) \
 		$(liba-libfreertos) \
 		-latomic \
@@ -126,7 +128,7 @@ BIN_LDFLAGS := \
 		-lstdc++ \
 		-lm
 
-$(LIB_NAME): $(output-file)
+$(LIB_NAME): $(output-file) $(SRC_C_OUTPUT_OBJ) $(SRC_C_OUTPUT_OBJ)
 	@$(CC) $(CFLAGS) $(BIN_LDFLAGS) -o $@
 
 print_bin_size:

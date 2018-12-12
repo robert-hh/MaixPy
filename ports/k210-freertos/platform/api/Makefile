@@ -90,6 +90,7 @@ update_mk:
 	$(shell echo $(MK_VALUE)$(foreach nn,$(foreach n,$(SUBDIRS) , $(wildcard $(n)/mk)),"-include "$(CUR_DIR_ADDR)$(nn)"\n") > mk)
 clean:
 	rm -f mk
+	rm -rf build
 	$(call mod_echo_func,"Cleaning "$(SUBDIRS)" ...")
 	$(foreach n,$(FILE_MAKEFILE),$(call sub_clean, $(dir $(n))))
 
