@@ -84,11 +84,11 @@ CXX_OBJ := $(SRC_CPP:.cpp=.o)
 INCLUDE_FLAGS := $(addprefix -I, $(INC))
 CFLAGS += $(INCLUDE_FLAGS)
 $(CXX_OBJ):%.o:%.cpp
-	mkdir -p $(dir $(OUTPUT_DIR))
-	$(CXX)  -o $(OUTPUT_DIR)/$@ -c $< $(INCLUDE_FLAGS) $(CXXFLAGS) -lstdc++
+	@mkdir -p $(dir $(OUTPUT_DIR))
+	@$(CXX)  -o $(OUTPUT_DIR)/$@ -c $< $(INCLUDE_FLAGS) $(CXXFLAGS) -lstdc++
 $(SRC_C_OBJ):%.o:%.c
-	mkdir -p $(dir $(OUTPUT_DIR))
-	$(CC)  -o $(OUTPUT_DIR)/$@ -c $< $(INCLUDE_FLAGS) $(CFLAGS) -lstdc++
+	@mkdir -p $(dir $(OUTPUT_DIR))
+	@$(CC)  -o $(OUTPUT_DIR)/$@ -c $< $(INCLUDE_FLAGS) $(CFLAGS) -lstdc++
 
 SRC_C_OUTPUT_OBJ := $(addprefix $(OUTPUT_DIR), $(SRC_C_OBJ))
 
@@ -127,7 +127,7 @@ BIN_LDFLAGS := \
 		-lm
 
 $(LIB_NAME):
-	$(CC) $(CFLAGS) $(BIN_LDFLAGS) -o $@
+	@$(CC) $(CFLAGS) $(BIN_LDFLAGS) -o $@
 
 print_bin_size:
 	$(SIZE) $(LIB_NAME)

@@ -62,8 +62,8 @@ INCLUDE_FLAGS := $(addprefix -I, $(INC))
 CFLAGS += $(INCLUDE_FLAGS)
 
 $(C_OBJ):%.o:%.c
-	mkdir -p $(dir $(OUTPUT_DIR)$@) 
-	$(CC)  -o $(OUTPUT_DIR)$@ -c $< $(CFLAGS)
+	@mkdir -p $(dir $(OUTPUT_DIR)$@) 
+	@$(CC)  -o $(OUTPUT_DIR)$@ -c $< $(CFLAGS)
 
 all: compile $(C_OBJ) $(OUTPUT_STATIC_LIB)
 

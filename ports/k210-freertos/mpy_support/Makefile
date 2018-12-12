@@ -109,14 +109,14 @@ SRC_QSTR += $(SRC_C)
 SRC_QSTR_AUTO_DEPS +=
 
 $(CXX_OBJ):%.o:%.cpp
-	mkdir -p $(dir $(OUTPUT_DIR))
+	@mkdir -p $(dir $(OUTPUT_DIR))
 	$(Q)$(CXX)  -o $(OUTPUT_DIR)/$@ -c $< -I$(INC) $(CXXFLAGS) -lstdc++
 
 # $(HEADER_BUILD)/qstr.i.last $(HEADER_BUILD)/qstrdefs.generated.h $(BUILD)/_frozen_mpy.c
 compile: $(BUILD)/_frozen_mpy.c $(OBJ) $(CXX_OBJ) 
 
 $(OUTPUT_STATIC_LIB):
-	$(Q)$(AR) rcs -o $(OUTPUT_DIR)$@ $(CXX_OBJ) $(OBJ) $(LIBS) $(LDFLAGS)
+	@$(AR) rcs -o $(OUTPUT_DIR)$@ $(CXX_OBJ) $(OBJ) $(LIBS) $(LDFLAGS)
 ###############################################################################
 
 sub_compile:
