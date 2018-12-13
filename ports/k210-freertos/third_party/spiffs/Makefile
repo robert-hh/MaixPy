@@ -65,12 +65,12 @@ $(C_OBJ):%.o:%.c
 	@mkdir -p $(dir $(OUTPUT_DIR)$@) 
 	@$(CC)  -o $(OUTPUT_DIR)$@ -c $< $(CFLAGS)
 
-all: compile $(C_OBJ) $(OUTPUT_STATIC_LIB)
+all: compile
 
 $(OUTPUT_STATIC_LIB):$(C_OBJ)
 	$(Q)$(AR) rcs -o $(OUTPUT_DIR)$@ $(addprefix $(OUTPUT_DIR), $(C_OBJ))
 
-compile:
+compile: $(OUTPUT_STATIC_LIB)
 	$(call mod_echo_func,"AllDirs "$(AllDirs)" ...")
 # $(foreach n,$(FILE_MAKEFILE),$(call sub_make,$(n)))
 

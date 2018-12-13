@@ -8,8 +8,7 @@ CUR_DIR_ADDR := $(shell pwd)/
 # USER OPTION
 LIB_NAME ?= platform
 CROSS_COMPILE ?= 
-MK_VALUE :="INC += "$(CUR_DIR_ADDR)"\n"
-MK_VALUE +="INC += "$(CUR_DIR_ADDR)"include/""\n"
+MK_VALUE := 
 OUTPUT_STATIC_LIB := $(LIB_NAME).a
 ###############################################################################
 # Optional options
@@ -38,11 +37,6 @@ define update_sub_mk
 		$(MAKE) -C $(1) update_mk CROSS_COMPILE=$(CROSS_COMPILE) PLATFORM=$(PLATFORM); \
 	fi;
 endef
-# MAKEFILE_LIST_LASTWORD = $(lastword $(MAKEFILE_LIST))
-# MAKEFILE_PATH := $(abspath $(MAKEFILE_LIST_LASTWORD))
-# MAKEFILE_DIR := $(dir $(MAKEFILE_PATH))
-# MAKEFILE_DIR_PATSUBST := $(patsubst %/,%,$(MAKEFILE_DIR))
-# CURRENT_DIR := $(notdir $(MAKEFILE_DIR_PATSUBST))
 
 sinclude mk
 

@@ -15,8 +15,7 @@ CUR_DIR_ADDR := $(shell pwd)/
 SDK_DIR_NAME :=kendryte-freertos-sdk
 SDK_DIR_ADDR := $(CUR_DIR_ADDR)$(SDK_DIR_NAME)/
 
-MK_VALUE :="INC += "$(CUR_DIR_ADDR)"\r\n"
-MK_VALUE +="INC += "$(CUR_DIR_ADDR)"include/""\r\n"
+MK_VALUE :=
 MK_VALUE +="INC += "$(SDK_DIR_ADDR)"lib/arch/include/""\r\n"
 MK_VALUE +="INC += "$(SDK_DIR_ADDR)"lib/bsp/include/""\r\n"
 MK_VALUE +="INC += "$(SDK_DIR_ADDR)"lib/drivers/include/""\r\n"

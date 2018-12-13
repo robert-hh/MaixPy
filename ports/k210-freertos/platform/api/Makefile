@@ -9,8 +9,9 @@ CUR_DIR_ADDR := $(shell pwd)/
 LIB_NAME ?= api
 OUTPUT_DIR := build/
 CROSS_COMPILE ?= 
-MK_VALUE :="INC += "$(CUR_DIR_ADDR)"\n"
-MK_VALUE +="INC += "$(CUR_DIR_ADDR)"include/""\n"
+MK_VALUE :=
+MK_VALUE +="INC += "$(CUR_DIR_ADDR)".""\n"
+MK_VALUE +="INC += "$(CUR_DIR_ADDR)"include""\n"
 MK_VALUE +="liba-sipeed_api += "$(CUR_DIR_ADDR)$(OUTPUT_DIR)"api.a""\n"
 MK_VALUE +="output-file += "'$$(liba-sipeed_api)'"\r\n"
 OUTPUT_STATIC_LIB := $(LIB_NAME).a
@@ -76,7 +77,7 @@ $(SRC_C_OBJ):%.o:%.c
 # AllDirs := $(shell ls -R | grep '^\./.*:$$' | awk '{gsub(":","");print}') .
 FILE_MAKEFILE := $(foreach n,$(SUBDIRS) , $(wildcard $(n)/Makefile))
 
-all: compile $(OUTPUT_STATIC_LIB)
+all: compile
 	$(call mod_echo_func,"CUR_DIR "$(CUR_DIR)" ...")
 
 $(OUTPUT_STATIC_LIB):$(CXX_OBJ) $(SRC_C_OBJ)

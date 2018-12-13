@@ -44,8 +44,7 @@
 /*****freeRTOS****/
 #include "FreeRTOS.h"
 #include "task.h"
-/*****API****/
-#include "sipeed_gpio.h"
+
 
 //************************************************************************************************
 //temp ops
@@ -135,7 +134,6 @@ int main()
 	/*todo interrupt init*/
 	printf(Banner);
 
-	test_gpio();
 	printf("[MAIXPY]Pll0:freq:%d\r\n",sysctl_clock_get_freq(SYSCTL_CLOCK_PLL0));
 	printf("[MAIXPY]Pll1:freq:%d\r\n",sysctl_clock_get_freq(SYSCTL_CLOCK_PLL1));
 	sysctl_set_power_mode(SYSCTL_POWER_BANK6,SYSCTL_POWER_V33);

@@ -11,6 +11,7 @@ CROSS_COMPILE ?=
 OUTPUT_DIR := build/
 MK_VALUE :="INC += "$(CUR_DIR_ADDR)"\n"
 MK_VALUE +="INC += "$(CUR_DIR_ADDR)"include/""\n"
+MK_VALUE +="INC += "$(CUR_DIR_ADDR)"standard_lib/include/""\n"
 MK_VALUE +="INC += "$(CUR_DIR_ADDR)"../../../""\n"
 MK_VALUE +="INC += "$(CUR_DIR_ADDR)$(OUTPUT_DIR)"\n"
 MK_VALUE +="liba-mpy += "$(CUR_DIR_ADDR)$(OUTPUT_DIR)"mpy_support.a""\n"
@@ -78,23 +79,21 @@ GET_SUBDIRS1 := $(shell find . -maxdepth 1 -type d)
 GET_SUBDIRS2 := $(basename $(patsubst ./%,%,$(GET_SUBDIRS1)))
 SUBDIRS := $(GET_SUBDIRS2)
 
-# AllDirs := $(shell ls -R | grep '^\./.*:$$' | awk '{gsub(":","");print}') .
+AllDirs := $(shell ls -R | grep '^\./.*:$$' | awk '{gsub(":","");print}') .
 FILE_MAKEFILE := $(foreach n,$(SUBDIRS) , $(wildcard $(n)/Makefile))
 
 $(BUILD)/_frozen_mpy.c: frozentest.mpy $(BUILD)/genhdr/qstrdefs.generated.h
 	$(ECHO) "MISC freezing bytecode"
 	$(Q)$(TOP)/tools/mpy-tool.py -f -q $(BUILD)/genhdr/qstrdefs.preprocessed.h -mlongint-impl=none $< > $@
 
-all: sub_compile compile $(OUTPUT_STATIC_LIB)
+all: compile
 
 ###############################################################################
 # COMPILE CUR SRC FILE
-SRC_C := $(wildcard *.c)
-SRC_CPP := $(wildcard *.cpp)
+SRC_C := $(foreach n,$(AllDirs) , $(wildcard $(n)/*.c))
+SRC_CPP := $(foreach n,$(AllDirs) , $(wildcard $(n)/*.cpp))
 SRC_C += $(MPY_EXT_SRC_C)
 ########################
-# temp
-SRC_C += $(BUILD)/_frozen_mpy.c
 
 C_OBJ := $(addprefix $(BUILD)/, $(SRC_C:.c=.o))
 OBJ += $(PY_O) $(C_OBJ)
@@ -113,27 +112,26 @@ $(CXX_OBJ):%.o:%.cpp
 	$(Q)$(CXX)  -o $(OUTPUT_DIR)/$@ -c $< -I$(INC) $(CXXFLAGS) -lstdc++
 
 # $(HEADER_BUILD)/qstr.i.last $(HEADER_BUILD)/qstrdefs.generated.h $(BUILD)/_frozen_mpy.c
-compile: $(BUILD)/_frozen_mpy.c $(OBJ) $(CXX_OBJ) 
+compile: sub_compile $(OUTPUT_STATIC_LIB)
 
-$(OUTPUT_STATIC_LIB):
-	@$(AR) rcs -o $(OUTPUT_DIR)$@ $(CXX_OBJ) $(OBJ) $(LIBS) $(LDFLAGS)
+compile_frozen_mpy:$(BUILD)/_frozen_mpy.c
+	$(call mod_echo_func,"compile _frozen_mpy ...")
+	$(Q)$(CC)  -o $(BUILD)/_frozen_mpy.o -c $(BUILD)/_frozen_mpy.c -I$(INC) $(CFLAGS)
+
+$(OUTPUT_STATIC_LIB): | compile_frozen_mpy $(OBJ) $(CXX_OBJ) 
+	@$(AR) rcs -o $(OUTPUT_DIR)$@ $(CXX_OBJ) $(OBJ) $(output-file) $(LIBS) $(LDFLAGS) $(BUILD)/_frozen_mpy.o
 ###############################################################################
 
 sub_compile:
 	$(foreach n,$(FILE_MAKEFILE),$(call sub_make,$(n)))
 
 update_mk:
-#-rm -f mk
-# $(call mod_echo_func,"INC "$(INC)" ...")
-# $(call mod_echo_func,"OBJ "$(OBJ)" ...")
-# $(call mod_echo_func,"CFLAGS "$(CFLAGS)" ...")
-# $(call mod_echo_func,"update mk file"" ...")
 	$(foreach n,$(FILE_MAKEFILE),$(call update_sub_mk, $(dir $(n))))
 	$(shell echo $(MK_VALUE)$(foreach nn,$(foreach n,$(SUBDIRS) , $(wildcard $(n)/mk)),"-include "$(CUR_DIR_ADDR)$(nn)"\n") > mk)
+
 clean_all: clean
 	rm -f mk
 	$(call mod_echo_func,"Cleaning "$(SUBDIRS)" ...")
 	$(foreach n,$(FILE_MAKEFILE),$(call sub_clean, $(n)))
 
 include $(TOP)/py/mkrules.mk
-	
